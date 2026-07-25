@@ -244,7 +244,7 @@ details summary{cursor:pointer;font-weight:700;color:var(--c-red)}
 
     <div class="astro-card" style="margin-top:16px">
       <h2 class="astro-h2" style="font-size:1.05rem">Отрезок: подбор слов и перевод</h2>
-      <p class="hint">Выберите на колесе от 1 до 5 кружков — слоги собираются в отрезок в порядке
+      <p class="hint">Выберите на колесе от 1 до 8 кружков — слоги собираются в отрезок в порядке
         чтения. Инструмент подберёт тамильские слова с учётом падежей, метрических долгот и
         усечений, покажет граммсправку и варианты чтения. Повторный клик снимает выбор.</p>
       <div class="q-read" id="segInfo">Кружки не выбраны.</div>
@@ -935,7 +935,7 @@ function toggleSeg(qi,si,s){
   const ix=SEG.findIndex(e=>e.qi===qi&&e.si===si);
   if(ix>=0)SEG.splice(ix,1);
   else{
-    if(SEG.length>=5){flashSegInfo("Максимум 5 кружков — снимите один из выбранных.");return;}
+    if(SEG.length>=8){flashSegInfo("Максимум 8 кружков — снимите один из выбранных.");return;}
     SEG.push({qi,si,s});
   }
   SEG.sort((a,b)=>(a.qi*8+a.si)-(b.qi*8+b.si));
@@ -1042,7 +1042,7 @@ function matchSeg(s){
 function segmentations(sylArr){
   const res=[];const n=sylArr.length;
   (function parts(start,acc){
-    if(acc.length>3)return;
+    if(acc.length>4)return;
     if(start===n){res.push([...acc]);return;}
     for(let end=start+1;end<=n;end++){acc.push(sylArr.slice(start,end).join(""));parts(end,acc);acc.pop();}
   })(0,[]);
@@ -1099,7 +1099,7 @@ async function runAI(){
   const out=document.getElementById("aiOut");
   out.hidden=false;
   const key=aiKeyInput.value.trim();
-  if(!SEG.length){out.className="ai-out err";out.textContent="Сначала выберите кружки на колесе (1–5).";return;}
+  if(!SEG.length){out.className="ai-out err";out.textContent="Сначала выберите кружки на колесе (1–8).";return;}
   if(!key){out.className="ai-out err";out.textContent="Укажите API-ключ Anthropic в «Настройках ИИ» ниже.";document.getElementById("aiSettings").open=true;return;}
   const syls=SEG.map(e=>e.s);
   const s=syls.join("");
