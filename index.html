@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lēkam 108 — числовой квадрат и чакрабандхи — Светлана Кройцер</title>
+
+<style>
+@font-face{font-family:"Jaipur";src:url("data:font/woff2;base64,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") format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+.astro-app{--c-red:#df2227;--c-orange:#ef5024;--c-white:#fff;--c-ink:#2a2320;--c-ink-soft:#6b625c;--c-cream:#faf4ea;--c-line:rgba(0,0,0,.12);--font-display:"Jaipur","Samarkan",Georgia,serif;--font-body:Arial,"Helvetica Neue",Helvetica,sans-serif;--fs-title:clamp(2.4rem,9vw,4rem);--fs-subtitle:clamp(1.05rem,4.5vw,1.5rem);--fs-h2:clamp(1.3rem,5.5vw,2rem);--fs-body:clamp(1.02rem,3.8vw,1.15rem);--fs-small:clamp(.82rem,3vw,.95rem);--lh-body:1.6;--radius:20px;--radius-sm:12px;--maxw:720px;--app-top-offset:calc(88px + env(safe-area-inset-top,0px));box-sizing:border-box;max-width:var(--maxw);margin:0 auto;padding:var(--app-top-offset) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));font-family:var(--font-body);font-size:var(--fs-body);line-height:var(--lh-body);color:var(--c-ink);background:var(--c-white);-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
+.astro-app *,.astro-app *::before,.astro-app *::after{box-sizing:border-box}
+.astro-header{margin:0 0 24px;padding:clamp(28px,7vw,48px) 20px;border-radius:var(--radius);background:linear-gradient(135deg,var(--c-red) 0%,var(--c-orange) 100%);text-align:center;color:var(--c-white)}
+.astro-title{margin:0;font-family:var(--font-display);font-weight:400;font-size:var(--fs-title);line-height:1.15;letter-spacing:.01em;color:var(--c-white)}
+.astro-subtitle{margin:12px 0 0;font-family:var(--font-body);font-weight:700;font-size:var(--fs-subtitle);text-transform:uppercase;letter-spacing:.04em;color:var(--c-white)}
+.astro-section{margin:0 0 24px}
+.astro-h2{margin:0 0 12px;font-family:var(--font-body);font-weight:700;font-size:var(--fs-h2);text-transform:uppercase;letter-spacing:.03em;color:var(--c-red)}
+.astro-app p{margin:0 0 14px}
+.astro-app a{color:var(--c-red);text-decoration:underline}
+.astro-card{padding:clamp(18px,5vw,28px);border-radius:var(--radius);background:var(--c-cream);border:1px solid var(--c-line)}
+.astro-card + .astro-card{margin-top:16px}
+.astro-field{margin:0 0 16px}
+.astro-field label{display:block;margin:0 0 6px;font-weight:700;font-size:var(--fs-small);color:var(--c-ink)}
+.astro-app input,.astro-app select,.astro-app textarea{width:100%;min-height:48px;padding:12px 14px;font-family:var(--font-body);font-size:16px;color:var(--c-ink);background:var(--c-white);border:2px solid var(--c-line);border-radius:var(--radius-sm)}
+.astro-app input:focus,.astro-app select:focus,.astro-app textarea:focus{outline:none;border-color:var(--c-orange)}
+.astro-btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:14px 28px;font-family:var(--font-body);font-weight:700;font-size:var(--fs-body);text-transform:uppercase;letter-spacing:.03em;color:var(--c-white);background:var(--c-orange);border:none;border-radius:var(--radius-sm);cursor:pointer;transition:background-color .15s ease,transform .05s ease}
+.astro-btn:hover{background:var(--c-red)}
+.astro-btn:active{transform:translateY(1px)}
+.astro-btn--block{display:flex;width:100%}
+.astro-btn--ghost{color:var(--c-red);background:transparent;border:2px solid var(--c-red)}
+.astro-btn--ghost:hover{color:var(--c-white);background:var(--c-red)}
+.astro-footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--c-line);font-size:var(--fs-small);line-height:1.5;color:var(--c-ink-soft)}
+.astro-disclaimer{margin:0 0 12px}
+.astro-disclaimer strong{color:var(--c-ink)}
+.astro-credits{margin:0 0 12px}
+.astro-copyright{margin:0;font-weight:700;color:var(--c-ink)}
+@media (prefers-reduced-motion:reduce){.astro-app *{transition:none!important;animation:none!important}}
+@media (min-width:768px){.astro-app{padding-left:32px;padding-right:32px}}
+
+/* ---------- Инструментальные стили (в рамках бренда) ---------- */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.tab{min-height:44px;padding:10px 16px;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);text-transform:uppercase;letter-spacing:.02em;color:var(--c-red);background:transparent;border:2px solid var(--c-line);border-radius:var(--radius-sm);cursor:pointer;transition:.15s}
+.tab:hover{border-color:var(--c-orange)}
+.tab[aria-selected="true"]{color:var(--c-white);background:var(--c-red);border-color:var(--c-red)}
+.panel{display:none}
+.panel.active{display:block}
+.hint{font-size:var(--fs-small);color:var(--c-ink-soft)}
+.note-verify{margin:0 0 14px;padding:10px 14px;border-left:4px solid var(--c-orange);background:#fff;border-radius:6px;font-size:var(--fs-small);color:var(--c-ink)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 16px}
+.controls .astro-btn{min-height:44px;padding:10px 16px;font-size:var(--fs-small)}
+.chip{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;margin:0 6px 6px 0;font-size:var(--fs-small);font-weight:700;color:var(--c-red);background:#fff;border:2px solid var(--c-line);border-radius:20px;cursor:pointer}
+.chip[aria-pressed="true"]{color:var(--c-white);background:var(--c-orange);border-color:var(--c-orange)}
+
+/* Квадрат 4x4 */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:340px;margin:0 auto}
+.gcell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.25rem;color:var(--c-ink);background:#fff;border:2px solid var(--c-line);border-radius:10px;transition:.12s;cursor:pointer;user-select:none}
+.gcell.on{color:var(--c-white);background:var(--c-orange);border-color:var(--c-orange);transform:scale(1.03)}
+.gcell.on2{color:var(--c-white);background:var(--c-red);border-color:var(--c-red)}
+.gcell.dim{opacity:.35}
+.sum-badge{display:inline-block;margin-left:10px;padding:4px 12px;border-radius:20px;background:var(--c-red);color:#fff;font-weight:700;font-size:var(--fs-small)}
+
+/* 4x8 сетки */
+.wrap-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.grid8{display:grid;grid-template-columns:repeat(8,minmax(34px,1fr));gap:4px;min-width:320px}
+.grid8 .c{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;background:#fff;border:1px solid var(--c-line);border-radius:6px;transition:.1s}
+.grid8 .c.frame{background:#2a2320;color:#fff;border-color:#2a2320}
+.grid8 .c.hl{background:var(--c-orange);color:#fff;border-color:var(--c-orange)}
+.grid8 .c.hl2{background:var(--c-red);color:#fff;border-color:var(--c-red)}
+.grid-label{font-size:var(--fs-small);font-weight:700;color:var(--c-ink-soft);margin:14px 0 6px}
+
+/* Таблицы */
+.tbl{width:100%;border-collapse:collapse;font-size:var(--fs-small)}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--c-line);vertical-align:top}
+.tbl th{color:var(--c-red);text-transform:uppercase;font-size:.78rem;letter-spacing:.03em}
+.tbl tr:hover td{background:#fff}
+.tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:700}
+.tag-comp{background:var(--c-orange);color:#fff}
+.tag-other{background:#e7dfd2;color:var(--c-ink)}
+.tag-geo{background:var(--c-red);color:#fff}
+.mono{font-variant-numeric:tabular-nums}
+.stat-row{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}
+.stat{flex:1 1 120px;padding:14px;border-radius:12px;background:#fff;border:1px solid var(--c-line);text-align:center}
+.stat b{display:block;font-size:1.7rem;color:var(--c-red);line-height:1.1}
+.stat span{font-size:var(--fs-small);color:var(--c-ink-soft)}
+
+/* Чакрабандха (колесо) */
+.wheel-wrap{text-align:center}
+svg.wheel{max-width:100%;height:auto;touch-action:manipulation}
+.q-read{margin:8px 0;padding:10px 14px;border-radius:10px;background:#fff;border:1px solid var(--c-line);font-size:var(--fs-small)}
+.q-read.active{border-color:var(--c-orange);box-shadow:0 0 0 2px rgba(239,80,36,.2)}
+.q-read b{color:var(--c-red)}
+.syl{font-weight:700}
+.word{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;background:var(--c-cream);border:1px solid var(--c-line)}
+.word .gl{color:var(--c-ink-soft);font-weight:400}
+.ta{font-size:1.15em}
+
+/* Переводчик */
+.gl-out{margin-top:14px}
+.legend{font-size:.8rem;color:var(--c-ink-soft);margin-top:8px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:var(--fs-small)}
+.kv b{color:var(--c-red)}
+details{margin:8px 0;border:1px solid var(--c-line);border-radius:10px;background:#fff;padding:8px 12px}
+details summary{cursor:pointer;font-weight:700;color:var(--c-red)}
+</style>
+</head>
+
+<body>
+<div class="astro-app">
+
+  <header class="astro-header">
+    <h1 class="astro-title">Lēkam 108</h1>
+    <p class="astro-subtitle">Числовой квадрат и чакрабандхи · комбинаторная поэтика</p>
+  </header>
+
+  <section class="astro-section">
+    <p>Исследовательский инструмент к пандиагональному «наисовершеннейшему» квадрату с константой
+       <b>108</b> и двум чакрабандхам старотамильской традиции. Позволяет перебрать все комбинации
+       чисел и геометрические узоры, прочитать чакрабандхи по правилам вращения, сопоставить их
+       между собой и с квадратом (поиск шифра) и разобрать тамильский текст с учётом сандхи,
+       деепричастий и звательного падежа.</p>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="square">Квадрат</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="combo">Комбинаторика · 72</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="chakra">Чакрабандхи</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="lab">Лаборатория</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="translate">Переводчик</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="about">О проекте</button>
+  </div>
+
+  <!-- ================= КВАДРАТ ================= -->
+  <section class="panel active" id="tab-square">
+    <h2 class="astro-h2">Магический квадрат 4×4</h2>
+    <div class="astro-card">
+      <p class="hint">Пандиагональный, most-perfect. Константа по строкам, столбцам, всем
+        пандиагоналям (в т.ч. «ломаным») и тороидальным блокам 2×2 равна <b>108</b>.
+        Нажмите на семейство узоров и листайте примеры — ячейки подсветятся.</p>
+
+      <div class="grid4" id="sq4"></div>
+      <p style="text-align:center;margin:14px 0 4px">Сумма выделенного:
+        <span class="sum-badge" id="sqSum">—</span></p>
+
+      <div class="controls" style="justify-content:center;margin-top:10px">
+        <span class="chip" role="button" tabindex="0" aria-pressed="true" data-fam="rows">Строки</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-fam="cols">Столбцы</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-fam="diagA">Пандиаг. ╲</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-fam="diagB">Пандиаг. ╱</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-fam="blocks">Блоки 2×2</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-fam="quad">Квадранты</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-fam="corners">Углы</span>
+      </div>
+      <div class="controls" style="justify-content:center">
+        <button class="astro-btn astro-btn--ghost" id="sqPrev">‹ Пред.</button>
+        <span class="mono" id="sqIdx" style="min-width:120px;text-align:center;font-weight:700"></span>
+        <button class="astro-btn astro-btn--ghost" id="sqNext">След. ›</button>
+      </div>
+    </div>
+
+    <div class="astro-card" style="margin-top:16px">
+      <h2 class="astro-h2" style="font-size:1.05rem">Структура квадрата</h2>
+      <div class="kv" id="sqProps"></div>
+    </div>
+
+    <div class="astro-card" style="margin-top:16px">
+      <h2 class="astro-h2" style="font-size:1.05rem">Бустрофедонное разворачивание 4×8</h2>
+      <p class="hint">Так квадрат «раскрывается» в 8 колонок под чтение чакрабандхи: каждая строка —
+        строка квадрата вперёд + зеркальная строка. Крайние колонки (чёрные) — числа-рамки
+        {46, 48, 51, 53}, которым в чакрабандхе соответствует рефрен <b>vā</b>.</p>
+      <div class="wrap-x"><div class="grid8" id="grid8num"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= КОМБИНАТОРИКА ================= -->
+  <section class="panel" id="tab-combo">
+    <h2 class="astro-h2">Все комбинации 4 чисел = 108</h2>
+    <div class="astro-card">
+      <div class="stat-row">
+        <div class="stat"><b id="stN">72</b><span>наборов из 4 чисел = 108</span></div>
+        <div class="stat"><b id="stComp">28</b><span>две доп. пары (54+54)</span></div>
+        <div class="stat"><b id="stOther">44</b><span>прочие комбинации</span></div>
+        <div class="stat"><b id="stGeo">—</b><span>реализуются как узор</span></div>
+      </div>
+      <p class="hint">Полный перечень 4-элементных наборов из множества {1–8, 46–53}, дающих 108.
+        «Узор» = набор занимает ячейки одного геометрического паттерна квадрата (строка/столбец/
+        пандиагональ/блок 2×2). Кликните строку — соответствующие ячейки подсветятся на мини-квадрате.</p>
+
+      <div class="controls">
+        <span class="chip" role="button" tabindex="0" aria-pressed="true" data-filt="all">Все</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-filt="comp">Доп. пары</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-filt="other">Прочие</span>
+        <span class="chip" role="button" tabindex="0" aria-pressed="false" data-filt="geo">Только узоры</span>
+      </div>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+        <div class="grid4" id="miniSq" style="max-width:200px;flex:0 0 auto"></div>
+        <div style="flex:1 1 260px;min-width:260px">
+          <div class="wrap-x">
+            <table class="tbl">
+              <thead><tr><th>#</th><th>Набор</th><th>Тип</th><th>Узор</th></tr></thead>
+              <tbody id="comboBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <p class="legend">Красным на квадрате — ячейки выбранного набора (если он геометрический).</p>
+    </div>
+  </section>
+
+  <!-- ================= ЧАКРАБАНДХИ ================= -->
+  <section class="panel" id="tab-chakra">
+    <h2 class="astro-h2">Чакрабандхи</h2>
+    <div class="astro-card">
+      <div class="note-verify"><b>На проверку.</b> Слоги и чтения оцифрованы из ваших диаграмм
+        (ISO 15919). Проверьте диакритику; поправить можно прямо в коде (объект <code>CHAKRA1/CHAKRA2</code>).</div>
+      <div class="controls">
+        <button class="astro-btn" id="ch1btn">Чакра I · «танец Шивы»</button>
+        <button class="astro-btn astro-btn--ghost" id="ch2btn">Чакра II · vā…vā</button>
+      </div>
+      <p class="hint" id="chDesc"></p>
+      <div class="wheel-wrap"><svg class="wheel" id="wheel" viewBox="0 0 420 420" role="img"></svg></div>
+      <p class="hint">Читается по 4 квадрантам (①→④), каждый квадрант — 8 слогов, обрамлённых
+        рефреном <b>vā</b> (это и есть «бандха» — замо́к колеса). Нажмите на квадрант.</p>
+      <div id="quadReads"></div>
+    </div>
+  </section>
+
+  <!-- ================= ЛАБОРАТОРИЯ ================= -->
+  <section class="panel" id="tab-lab">
+    <h2 class="astro-h2">Лаборатория соответствий</h2>
+    <div class="astro-card">
+      <p class="hint">Число ↔ позиция ↔ слог. Нажмите на число в квадрате или на ячейку в
+        сетке 4×8 — подсветятся все её вхождения в числовой и слоговой сетках (Чакра I).
+        Это позволяет проверить, есть ли подстановочный шифр «одно число — один слог».</p>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;justify-content:center">
+        <div>
+          <div class="grid-label">Квадрат 4×4</div>
+          <div class="grid4" id="labSq" style="max-width:220px"></div>
+        </div>
+      </div>
+
+      <div class="grid-label">Числовая сетка 4×8</div>
+      <div class="wrap-x"><div class="grid8" id="labNum"></div></div>
+      <div class="grid-label">Слоговая сетка 4×8 (Чакра I)</div>
+      <div class="wrap-x"><div class="grid8" id="labSyl"></div></div>
+
+      <div id="labOut" style="margin-top:14px"></div>
+    </div>
+
+    <div class="astro-card" style="margin-top:16px">
+      <h2 class="astro-h2" style="font-size:1.05rem">Карта «число → слоги»</h2>
+      <p class="hint">Полное соответствие по совмещённым сеткам 4×8. Если у числа больше одного
+        слога — простого подстановочного шифра нет, отображение позиционно-структурное.</p>
+      <div class="wrap-x"><table class="tbl"><thead><tr><th>Число</th><th>Слог(и)</th><th>Комментарий</th></tr></thead><tbody id="mapBody"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ================= ПЕРЕВОДЧИК ================= -->
+  <section class="panel" id="tab-translate">
+    <h2 class="astro-h2">Тамильский разбор</h2>
+    <div class="astro-card">
+      <div class="note-verify"><b>Черновой глоссарий.</b> Точечный декодер слов этих фигур
+        (источник — Tamil Lexicon, University of Madras, 1924–1936). Расширяется добавлением
+        записей в <code>GLOSSARY</code>. Проверьте значения перед научной публикацией.</div>
+
+      <div class="astro-field">
+        <label for="tinp">Строка слогов (ISO 15919, через пробел)</label>
+        <input id="tinp" type="text" value="nala vima naṭi kaṭu" autocomplete="off">
+      </div>
+      <div class="controls">
+        <button class="astro-btn" id="tgo">Разобрать</button>
+        <button class="astro-btn astro-btn--ghost" id="tclr">Очистить</button>
+      </div>
+      <div class="controls">
+        <span class="hint">Быстрые примеры:&nbsp;</span>
+        <span class="chip" role="button" tabindex="0" data-ex="nala vima naṭi kaṭu">танец Шивы</span>
+        <span class="chip" role="button" tabindex="0" data-ex="vālavāṭi vāravāram vāṭivāla vāci vāci">vāravāram</span>
+      </div>
+      <div class="gl-out" id="tout"></div>
+    </div>
+
+    <div class="astro-card" style="margin-top:16px">
+      <h2 class="astro-h2" style="font-size:1.05rem">Правила чтения (справка)</h2>
+      <details><summary>Сандхи (puṇarcci)</summary>
+        <div class="kv" id="sandhiList"></div></details>
+      <details><summary>Деепричастие (vinaiyeccam)</summary>
+        <p class="hint" style="margin:8px 0 0">Основа глагола + окончание -tu/-i/-ntu передаёт
+          «сделав / делая». Пример: <b>kaṭu-</b> → <b>kaṭu(ttu)</b> «стремительно двигаясь».
+          В глоссарии помечено тегом «дееприч.».</p></details>
+      <details><summary>Звательный падеж (viḷi vēṟṟumai)</summary>
+        <p class="hint" style="margin:8px 0 0">Обращение: часто удлинение конечного гласного
+          или -ē / -ā. Напр. обращение к Шиве в переводе диаграммы: «о Шива». Помечается тегом «зват.».</p></details>
+    </div>
+
+    <div class="astro-card" style="margin-top:16px">
+      <h2 class="astro-h2" style="font-size:1.05rem">Глоссарий</h2>
+      <div class="wrap-x"><table class="tbl"><thead><tr><th>ISO</th><th>தமிழ்</th><th>Значение</th><th>Пометы</th></tr></thead><tbody id="glossBody"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ================= О ПРОЕКТЕ ================= -->
+  <section class="panel" id="tab-about">
+    <h2 class="astro-h2">О проекте</h2>
+    <div class="astro-card">
+      <p>Инструмент к научной работе о комбинаторном стихосложении на основе числового квадрата
+        и чакрабандхи. Цель — выявить «следы мозга программиста-комбинаторика»: строгие
+        инварианты, которые невозможно получить случайно.</p>
+      <h2 class="astro-h2" style="font-size:1.05rem">Что уже подтверждено расчётом</h2>
+      <ul>
+        <li>Ровно <b>72</b> набора из 4 чисел множества {1–8, 46–53} дают 108
+            (28 — две дополнительные пары 54+54, 44 — прочие).</li>
+        <li>Ровно <b>32</b> геометрических паттерна квадрата дают 108
+            (4 строки + 4 столбца + 8 пандиагоналей + 16 блоков 2×2) — квадрат
+            пандиагональный и most-perfect.</li>
+        <li>8 дополнительных пар по 54; 108 = 2×54 — арифметическая ось конструкции.</li>
+        <li>Числа-рамки {46, 48, 51, 53} в совмещённой сетке 4×8 всегда стоят на позиции
+            рефрена <b>vā</b>.</li>
+      </ul>
+      <h2 class="astro-h2" style="font-size:1.05rem">Дальнейшие шаги</h2>
+      <ul>
+        <li>Сверить диакритику слогов обеих чакрабандх по первоисточнику.</li>
+        <li>Расширить глоссарий и правила сандхи под полный корпус.</li>
+        <li>Формально проверить гипотезы шифра в «Лаборатории».</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="astro-footer">
+    <p class="astro-disclaimer">
+      <strong>О методике.</strong>
+      Комбинаторные и геометрические свойства квадрата вычисляются точно. Тамильские чтения,
+      сандхи и значения основаны на классических источниках и оцифровке диаграмм автора;
+      материал носит исследовательский и справочно-просветительский характер.
+    </p>
+    <p class="astro-credits">
+      Использован словарь: Tamil Lexicon, University of Madras, 1924–1936.
+      Перевод со старотамильского — Светлана Кройцер.
+    </p>
+    <p class="astro-copyright">
+      © <span id="year"></span> Индийская астрология со Светланой Кройцер · goroskop1008.ru
+    </p>
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+document.getElementById("year").textContent = new Date().getFullYear();
+
+/* ==================== ДАННЫЕ ==================== */
+const SQUARE = [[51,1,49,7],[48,8,50,2],[5,47,3,53],[4,52,6,46]];
+const MAGIC = 108;
+function cell(r,c){return SQUARE[((r%4)+4)%4][((c%4)+4)%4];}
+
+/* Совмещённая сетка 4×8: квадрат бустрофедоном (см. вкладку «Квадрат») */
+const GRID8_NUM = [
+  [SQUARE[0][0],SQUARE[0][1],SQUARE[0][2],SQUARE[0][3], SQUARE[1][3],SQUARE[1][2],SQUARE[1][1],SQUARE[1][0]],
+  [SQUARE[1][0],SQUARE[1][1],SQUARE[1][2],SQUARE[1][3], SQUARE[0][3],SQUARE[0][2],SQUARE[0][1],SQUARE[0][0]],
+  [SQUARE[2][3],SQUARE[2][2],SQUARE[2][1],SQUARE[2][0], SQUARE[3][0],SQUARE[3][1],SQUARE[3][2],SQUARE[3][3]],
+  [SQUARE[3][3],SQUARE[3][2],SQUARE[3][1],SQUARE[3][0], SQUARE[2][0],SQUARE[2][1],SQUARE[2][2],SQUARE[2][3]]
+];
+
+/* Слоговая сетка 4×8 (Чакра I) — оцифровка диаграммы, на проверку */
+const GRID8_SYL = [
+  ["vā","la","ve","la","vi","kā","ra","vā"],
+  ["vā","ra","kā","ma","na","nā","ṭi","vā"],
+  ["vā","ṭi","nā","ṭi","ṭu","mo","śi","vā"],
+  ["vā","ci","mo","ka","na","ve","la","vā"]
+];
+
+const CHAKRA1 = {
+  name:"Чакра I · Nāṉkārai Cakkarapantam",
+  desc:"«К благому результату, о Шива, направь свой космический танец!» Ключевые слова: nala, vima, naṭi, kaṭu.",
+  quadrants:[
+    ["vā","la","vē","la","vi","kā","ra","vā"],
+    ["vā","ra","kā","ma","nai","nā","ṭi","vā"],
+    ["vā","ṭi","nā","ṭi","ṭu","mō","śi","vā"],
+    ["vā","ci","mō","ka","na","vē","la","vā"]
+  ],
+  sandhi:["nala","vima","naṭi","kaṭu"]
+};
+
+const CHAKRA2 = {
+  name:"Чакра II · vā…vā",
+  desc:"Вторая чакрабандха для компаративного анализа. Слоги содержат ретрофлексные ṇ/ḷ/ṟ — важно для сандхи.",
+  quadrants:[
+    ["vā","ṉa","vā","pa","la","ṟa","ya","vā"],
+    ["vā","ya","ṟā","va","ṇa","yā","ma","vā"],
+    ["vā","ma","vā","ma","ḷi","yā","ci","vā"],
+    ["vā","ci","yā","ṇi","vī","vā","ṇa","vā"]
+  ],
+  sandhi:["vālavāṭi","vāravāram","vāṭivāla","vāci"]
+};
+
+/* Глоссарий (черновой, на проверку) */
+const GLOSSARY = [
+  {iso:"nala", ta:"நல", ru:"благой результат; благоприятный поворот", en:"to result in good; favourable turn", src:"நல-த்தல்", tags:["основа"]},
+  {iso:"ma", ta:"ம", ru:"Луна; Шива; Яма; Время", en:"Moon; Śiva; Yama; Time", src:"ம¹", tags:["сущ."]},
+  {iso:"vi", ta:"வி", ru:"небо; птица; ветер; глаз; направление; красота", en:"Heaven; Bird; Wind; Eye; Direction; Beauty", src:"வி¹", tags:["сущ."]},
+  {iso:"vima", ta:"விம", ru:"vi + ma → «небесная Луна / Шива»", en:"vi + ma", src:"сандхи", tags:["сложное"]},
+  {iso:"naṭi", ta:"நடி", ru:"танец; танцевать", en:"dancing", src:"நடி", tags:["сущ.","дееприч."]},
+  {iso:"kaṭu", ta:"கடு", ru:"двигаться стремительно, мчаться", en:"to move swiftly, run fast", src:"கடு-த்தல்", tags:["глаг.","дееприч."]},
+  {iso:"vā", ta:"வா", ru:"рефрен-рамка чакры; также «приди» (императив vā-)", en:"frame refrain; come (imv.)", src:"வா-", tags:["рамка","глаг."]},
+  {iso:"vālavāṭi", ta:"வாலவாடி", ru:"vālavaṉ + āti (пример сандхи из диаграммы)", en:"vālavaṉ + āti", src:"сандхи", tags:["сложное"]},
+  {iso:"vāravāram", ta:"வாரவாரம்", ru:"vāravāra = vāravāram", en:"vāravāram", src:"диаграмма", tags:["сложное"]},
+  {iso:"vāṭivāla", ta:"வாடிவால", ru:"vaṭivāḷaṉ (форма из диаграммы)", en:"vaṭivāḷaṉ", src:"диаграмма", tags:["сложное"]},
+  {iso:"vāci", ta:"வாசி", ru:"vāci vāci (повтор из диаграммы)", en:"vāci (repeated)", src:"диаграмма", tags:[]}
+];
+
+const SANDHI_RULES = [
+  ["a + a → ā","слияние одинаковых гласных (напр. -a + a-)"],
+  ["-am + гласный","конечное -am часто выпадает/сливается перед гласным"],
+  ["вставка y / v","глайд между гласными на стыке слов (i,e,ai → y; a,o,u → v)"],
+  ["удвоение (k,c,t,p)","после кратких основ смычный на стыке удваивается (val vali)"],
+  ["ретрофлекс ṇ/ḷ/ṟ","сохраняются на стыке, различают значения (важно в Чакре II)"]
+];
+
+/* ==================== ТАМИЛЬСКИЙ РАЗБОР (утилиты) ==================== */
+function normalize(s){return s.toLowerCase().replace(/[’'`]/g,"").trim();}
+const GL_INDEX=new Map();GLOSSARY.forEach(g=>GL_INDEX.set(normalize(g.iso),g));
+function stripLong(x){return x.replace(/[āīūēō]/g,m=>({"ā":"a","ī":"i","ū":"u","ē":"e","ō":"o"}[m]));}
+function lookup(tok){
+  const t=normalize(tok);
+  if(GL_INDEX.has(t))return GL_INDEX.get(t);
+  const bare=stripLong(t);
+  for(const [k,g] of GL_INDEX){ if(stripLong(k)===bare)return g; }
+  return null;
+}
+function segmentWords(sylArr){
+  // из массива слогов чакры собираем «слова» между рефренами vā
+  const words=[];let cur=[];
+  sylArr.forEach(s=>{
+    if(s==="vā"){ if(cur.length){words.push(cur.join(""));cur=[];} }
+    else cur.push(s);
+  });
+  if(cur.length)words.push(cur.join(""));
+  return words;
+}
+function wordChip(w){
+  const g=lookup(w);
+  if(g)return `<span class="word ta">${w} <span class="gl">— ${g.ru}</span></span>`;
+  return `<span class="word ta">${w} <span class="gl">— ?</span></span>`;
+}
+
+/* ==================== КОМБИНАТОРИКА ==================== */
+const VALS = [];
+for(let r=0;r<4;r++)for(let c=0;c<4;c++)VALS.push(SQUARE[r][c]);
+VALS.sort((a,b)=>a-b);
+
+function fourSubsets(arr,target){
+  const res=[];
+  const n=arr.length;
+  for(let a=0;a<n;a++)for(let b=a+1;b<n;b++)for(let c=b+1;c<n;c++)for(let d=c+1;d<n;d++){
+    if(arr[a]+arr[b]+arr[c]+arr[d]===target)res.push([arr[a],arr[b],arr[c],arr[d]]);
+  }
+  return res;
+}
+function isTwoComp(s){
+  const set=new Set(s), used=new Set(); let pairs=0;
+  for(const x of s){ if(used.has(x))continue; const y=54-x;
+    if(set.has(y)&&y!==x&&!used.has(y)){used.add(x);used.add(y);pairs++;} }
+  return pairs===2 && used.size===4;
+}
+
+/* Геометрические паттерны -> множества значений */
+function geoPatterns(){
+  const P=[];
+  for(let r=0;r<4;r++)P.push({fam:"rows",cells:[[r,0],[r,1],[r,2],[r,3]]});
+  for(let c=0;c<4;c++)P.push({fam:"cols",cells:[[0,c],[1,c],[2,c],[3,c]]});
+  for(let k=0;k<4;k++)P.push({fam:"diagA",cells:[[0,k],[1,(k+1)%4],[2,(k+2)%4],[3,(k+3)%4]]});
+  for(let k=0;k<4;k++)P.push({fam:"diagB",cells:[[0,k],[1,(k+3)%4],[2,(k+2)%4],[3,(k+1)%4]]});
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++)P.push({fam:"blocks",cells:[[r,c],[r,(c+1)%4],[(r+1)%4,c],[(r+1)%4,(c+1)%4]]});
+  return P;
+}
+const GEO = geoPatterns();
+const GEO_VALSET = new Map(); // key "a,b,c,d" sorted -> pattern cells (first found)
+GEO.forEach(p=>{
+  const vs=p.cells.map(([r,c])=>SQUARE[r][c]).sort((a,b)=>a-b);
+  const key=vs.join(",");
+  if(!GEO_VALSET.has(key))GEO_VALSET.set(key,p);
+});
+
+const SUBSETS = fourSubsets(VALS,MAGIC).map(s=>{
+  const key=[...s].sort((a,b)=>a-b).join(",");
+  return {vals:s, comp:isTwoComp(s), geo:GEO_VALSET.get(key)||null};
+});
+const CNT = {
+  n:SUBSETS.length,
+  comp:SUBSETS.filter(x=>x.comp).length,
+  other:SUBSETS.filter(x=>!x.comp).length,
+  geo:SUBSETS.filter(x=>x.geo).length
+};
+
+/* Дополнительные семейства для вкладки «Квадрат» */
+function patternsForFamily(fam){
+  if(fam==="quad") return [
+    {label:"верх-лево", cells:[[0,0],[0,1],[1,0],[1,1]]},
+    {label:"верх-право",cells:[[0,2],[0,3],[1,2],[1,3]]},
+    {label:"низ-лево",  cells:[[2,0],[2,1],[3,0],[3,1]]},
+    {label:"низ-право", cells:[[2,2],[2,3],[3,2],[3,3]]}
+  ];
+  if(fam==="corners") return [
+    {label:"4 угла",     cells:[[0,0],[0,3],[3,0],[3,3]]},
+    {label:"центр 2×2",  cells:[[1,1],[1,2],[2,1],[2,2]]}
+  ];
+  return GEO.filter(p=>p.fam===fam).map((p,i)=>({label:fam+" "+(i+1),cells:p.cells}));
+}
+
+/* ==================== UI: ВКЛАДКИ ==================== */
+const tabs=[...document.querySelectorAll(".tab")];
+const panels={square:"tab-square",combo:"tab-combo",chakra:"tab-chakra",lab:"tab-lab",translate:"tab-translate",about:"tab-about"};
+tabs.forEach(t=>t.addEventListener("click",()=>{
+  tabs.forEach(x=>x.setAttribute("aria-selected",x===t?"true":"false"));
+  Object.values(panels).forEach(id=>document.getElementById(id).classList.remove("active"));
+  document.getElementById(panels[t.dataset.tab]).classList.add("active");
+}));
+
+/* ==================== ВКЛАДКА КВАДРАТ ==================== */
+const sq4=document.getElementById("sq4");
+const sqCells=[];
+for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+  const d=document.createElement("div");
+  d.className="gcell"; d.textContent=SQUARE[r][c]; d.dataset.r=r; d.dataset.c=c;
+  sq4.appendChild(d); sqCells.push(d);
+}
+let sqFam="rows", sqList=patternsForFamily("rows"), sqPos=0;
+function paintSquare(){
+  const p=sqList[sqPos];
+  const on=new Set(p.cells.map(([r,c])=>r*4+c));
+  sqCells.forEach((d,i)=>{
+    d.classList.toggle("on",on.has(i));
+    d.classList.toggle("dim",!on.has(i));
+  });
+  const sum=p.cells.reduce((a,[r,c])=>a+SQUARE[r][c],0);
+  document.getElementById("sqSum").textContent=sum;
+  document.getElementById("sqIdx").textContent=(sqPos+1)+" / "+sqList.length+" · "+p.label;
+}
+document.querySelectorAll("[data-fam]").forEach(ch=>{
+  const act=()=>{
+    document.querySelectorAll("[data-fam]").forEach(x=>x.setAttribute("aria-pressed",x===ch?"true":"false"));
+    sqFam=ch.dataset.fam; sqList=patternsForFamily(sqFam); sqPos=0; paintSquare();
+  };
+  ch.addEventListener("click",act);
+  ch.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});
+});
+document.getElementById("sqPrev").onclick=()=>{sqPos=(sqPos-1+sqList.length)%sqList.length;paintSquare();};
+document.getElementById("sqNext").onclick=()=>{sqPos=(sqPos+1)%sqList.length;paintSquare();};
+paintSquare();
+
+/* свойства квадрата */
+(function(){
+  const el=document.getElementById("sqProps");
+  const pairs=[];
+  for(let x=1;x<=8;x++)pairs.push(x+"+"+(54-x));
+  const rows=[
+    ["Константа","108 (по строкам, столбцам, всем пандиагоналям, блокам 2×2)"],
+    ["Тип","пандиагональный, most-perfect (наисовершеннейший)"],
+    ["Множество","{1,2,3,4,5,6,7,8, 46,47,48,49,50,51,52,53}"],
+    ["Сумма всех","432 = 4×108"],
+    ["Доп. пары (54)","8 шт.: "+pairs.join(", ")],
+    ["Узоров = 108","32 (4+4+8+16)"]
+  ];
+  el.innerHTML=rows.map(([k,v])=>`<b>${k}</b><span>${v}</span>`).join("");
+})();
+
+/* сетка 4×8 чисел */
+(function(){
+  const el=document.getElementById("grid8num");
+  for(let r=0;r<4;r++)for(let c=0;c<8;c++){
+    const d=document.createElement("div");
+    const v=GRID8_NUM[r][c];
+    d.className="c"+(([46,48,51,53].includes(v))?" frame":"");
+    d.textContent=v; el.appendChild(d);
+  }
+})();
+
+/* ==================== ВКЛАДКА КОМБИНАТОРИКА ==================== */
+document.getElementById("stN").textContent=CNT.n;
+document.getElementById("stComp").textContent=CNT.comp;
+document.getElementById("stOther").textContent=CNT.other;
+document.getElementById("stGeo").textContent=CNT.geo;
+document.getElementById("stGeo2")&&(document.getElementById("stGeo2").textContent=CNT.geo);
+
+const miniSq=document.getElementById("miniSq");
+const miniCells=[];
+for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+  const d=document.createElement("div");
+  d.className="gcell"; d.style.fontSize=".95rem"; d.textContent=SQUARE[r][c];
+  miniSq.appendChild(d); miniCells.push(d);
+}
+function miniHighlight(sub){
+  miniCells.forEach(d=>{d.classList.remove("on2");});
+  if(sub&&sub.geo){
+    sub.geo.cells.forEach(([r,c])=>miniCells[r*4+c].classList.add("on2"));
+  }
+}
+let comboFilt="all";
+function renderCombo(){
+  const body=document.getElementById("comboBody");
+  const list=SUBSETS.filter(s=>{
+    if(comboFilt==="comp")return s.comp;
+    if(comboFilt==="other")return !s.comp;
+    if(comboFilt==="geo")return !!s.geo;
+    return true;
+  });
+  body.innerHTML=list.map((s,i)=>{
+    const vals=[...s.vals].sort((a,b)=>a-b).join(" + ");
+    const type=s.comp?'<span class="tag tag-comp">доп. пары</span>':'<span class="tag tag-other">прочее</span>';
+    const geo=s.geo?'<span class="tag tag-geo">'+famRu(s.geo.fam)+'</span>':'<span class="hint">—</span>';
+    return `<tr data-k="${[...s.vals].sort((a,b)=>a-b).join(',')}"><td class="mono">${i+1}</td><td class="mono">${vals}</td><td>${type}</td><td>${geo}</td></tr>`;
+  }).join("");
+  body.querySelectorAll("tr").forEach(tr=>{
+    tr.addEventListener("click",()=>{
+      const k=tr.dataset.k;
+      const sub=SUBSETS.find(x=>[...x.vals].sort((a,b)=>a-b).join(",")===k);
+      miniHighlight(sub);
+    });
+  });
+}
+function famRu(f){return {rows:"строка",cols:"столбец",diagA:"пандиаг.╲",diagB:"пандиаг.╱",blocks:"блок 2×2"}[f]||f;}
+document.querySelectorAll("[data-filt]").forEach(ch=>{
+  const act=()=>{
+    document.querySelectorAll("[data-filt]").forEach(x=>x.setAttribute("aria-pressed",x===ch?"true":"false"));
+    comboFilt=ch.dataset.filt; renderCombo();
+  };
+  ch.addEventListener("click",act);
+  ch.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});
+});
+renderCombo();
+
+/* ==================== ВКЛАДКА ЧАКРАБАНДХИ ==================== */
+const SVGNS="http://www.w3.org/2000/svg";
+let curChakra=CHAKRA1;
+function svgEl(t,at){const e=document.createElementNS(SVGNS,t);for(const k in at)e.setAttribute(k,at[k]);return e;}
+function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+function renderWheel(){
+  const svg=document.getElementById("wheel");
+  svg.innerHTML="";
+  const cx=210,cy=210;
+  document.getElementById("chDesc").textContent=curChakra.desc;
+  // центральная надпись
+  const cName=svgEl("text",{x:cx,y:cy-6,"text-anchor":"middle","font-size":"13","font-weight":"700",fill:"#df2227"});
+  cName.textContent="cakra";
+  const cSum=svgEl("text",{x:cx,y:cy+14,"text-anchor":"middle","font-size":"11",fill:"#6b625c"});
+  cSum.textContent="vā = рамка";
+  // квадранты: ① верх-право,② низ-право,③ низ-лево,④ верх-лево
+  const baseAngle=[0,90,180,270]; // старт квадранта (по часовой, 0=вверх)
+  const colors=["#ef5024","#df2227","#2a2320","#6b625c"];
+  curChakra.quadrants.forEach((q,qi)=>{
+    const a0=baseAngle[qi], a1=a0+90;
+    // дуга-указатель
+    const [x0,y0]=polar(cx,cy,150,a0+8),[x1,y1]=polar(cx,cy,150,a1-8);
+    const arc=svgEl("path",{d:`M ${x0.toFixed(1)} ${y0.toFixed(1)} A 150 150 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`,
+      fill:"none",stroke:colors[qi],"stroke-width":"2","opacity":".5","marker-end":"url(#arw"+qi+")"});
+    svg.appendChild(defsArrow(svg,qi,colors[qi]));
+    svg.appendChild(arc);
+    // 8 слогов вдоль дуги, радиус слегка растёт (спираль чтения)
+    q.forEach((s,si)=>{
+      const t=si/7;
+      const ang=a0+ t*90;
+      const rad=95+ t*45;
+      const [x,y]=polar(cx,cy,rad,ang);
+      const g=svgEl("g",{class:"qsyl","data-q":qi,style:"cursor:pointer"});
+      const frame=(s==="vā");
+      const circ=svgEl("circle",{cx:x,cy:y,r:16,fill:frame?"#2a2320":"#faf4ea",stroke:colors[qi],"stroke-width":frame?"2":"1.5"});
+      const tx=svgEl("text",{x:x,y:y+4,"text-anchor":"middle","font-size":"12","font-weight":"700",fill:frame?"#fff":"#2a2320"});
+      tx.textContent=s;
+      g.appendChild(circ);g.appendChild(tx);
+      g.addEventListener("click",()=>selectQuad(qi));
+      svg.appendChild(g);
+    });
+    // номер квадранта
+    const [nx,ny]=polar(cx,cy,178,a0+45);
+    const num=svgEl("text",{x:nx,y:ny+5,"text-anchor":"middle","font-size":"16","font-weight":"700",fill:colors[qi]});
+    num.textContent=["①","②","③","④"][qi];
+    svg.appendChild(num);
+  });
+  svg.appendChild(cName);svg.appendChild(cSum);
+  renderQuadReads();
+}
+function defsArrow(svg,qi,color){
+  const defs=svgEl("defs",{});
+  const m=svgEl("marker",{id:"arw"+qi,markerWidth:"8",markerHeight:"8",refX:"4",refY:"4",orient:"auto"});
+  const p=svgEl("path",{d:"M0,0 L8,4 L0,8 Z",fill:color});
+  m.appendChild(p);defs.appendChild(m);return defs;
+}
+function renderQuadReads(){
+  const box=document.getElementById("quadReads");
+  const quads=curChakra.quadrants.map((q,qi)=>{
+    const line=q.map(s=>`<span class="syl">${s}</span>`).join(" ");
+    return `<div class="q-read" id="qr${qi}"><b>${["①","②","③","④"][qi]}</b> ${line}</div>`;
+  }).join("");
+  const words=(curChakra.sandhi||[]).map(w=>wordChip(w)).join(" ");
+  box.innerHTML=quads+
+    `<div class="q-read"><b>Слова после сандхи:</b>`+
+    `<div style="margin-top:6px">${words}</div></div>`;
+}
+function selectQuad(qi){
+  document.querySelectorAll(".q-read").forEach((el,i)=>el.classList.toggle("active",i===qi));
+  const el=document.getElementById("qr"+qi);
+  if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+document.getElementById("ch1btn").onclick=()=>{curChakra=CHAKRA1;setChBtns();renderWheel();};
+document.getElementById("ch2btn").onclick=()=>{curChakra=CHAKRA2;setChBtns();renderWheel();};
+function setChBtns(){
+  document.getElementById("ch1btn").className="astro-btn"+(curChakra===CHAKRA1?"":" astro-btn--ghost");
+  document.getElementById("ch2btn").className="astro-btn"+(curChakra===CHAKRA2?"":" astro-btn--ghost");
+}
+renderWheel();
+
+/* ==================== ВКЛАДКА ЛАБОРАТОРИЯ ==================== */
+const labSq=document.getElementById("labSq"),labNum=document.getElementById("labNum"),labSyl=document.getElementById("labSyl");
+const labSqCells=[],labNumCells=[],labSylCells=[];
+for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+  const d=document.createElement("div");d.className="gcell";d.style.fontSize="1rem";
+  d.textContent=SQUARE[r][c];d.dataset.v=SQUARE[r][c];
+  d.addEventListener("click",()=>labSelect(+d.dataset.v));
+  labSq.appendChild(d);labSqCells.push(d);
+}
+for(let r=0;r<4;r++)for(let c=0;c<8;c++){
+  const v=GRID8_NUM[r][c];
+  const d=document.createElement("div");d.className="c"+(([46,48,51,53].includes(v))?" frame":"");
+  d.textContent=v;d.dataset.v=v;
+  d.addEventListener("click",()=>labSelect(v));
+  labNum.appendChild(d);labNumCells.push(d);
+  const s=document.createElement("div");s.className="c"+((GRID8_SYL[r][c]==="vā")?" frame":"");
+  s.textContent=GRID8_SYL[r][c];labSyl.appendChild(s);labSylCells.push(s);
+}
+function labSelect(v){
+  const syls=new Set();
+  labNumCells.forEach((d,i)=>{
+    const hit=(+d.dataset.v===v);
+    d.classList.toggle("hl2",hit);
+    labSylCells[i].classList.toggle("hl",hit);
+    if(hit)syls.add(labSylCells[i].textContent);
+  });
+  labSqCells.forEach(d=>d.classList.toggle("on2",+d.dataset.v===v));
+  const out=document.getElementById("labOut");
+  out.innerHTML=`<div class="q-read active"><b>Число ${v}</b> → слог(и): `+
+    [...syls].map(s=>`<span class="word">${s}</span>`).join(" ")+
+    (syls.size>1?` <span class="hint">(нет однозначного соответствия — не подстановочный шифр)</span>`:``)+`</div>`;
+}
+/* карта число->слоги */
+(function(){
+  const map=new Map();
+  for(let r=0;r<4;r++)for(let c=0;c<8;c++){
+    const v=GRID8_NUM[r][c],s=GRID8_SYL[r][c];
+    if(!map.has(v))map.set(v,new Set());
+    map.get(v).add(s);
+  }
+  const rows=[...map.keys()].sort((a,b)=>a-b).map(v=>{
+    const s=[...map.get(v)];
+    const cmt=s.length>1?"несколько слогов":(s[0]==="vā"?"рамка":"однозначно");
+    return `<tr><td class="mono">${v}</td><td class="ta"><b>${s.join(", ")}</b></td><td class="hint">${cmt}</td></tr>`;
+  });
+  document.getElementById("mapBody").innerHTML=rows.join("");
+})();
+labSelect(51);
+
+/* ==================== ВКЛАДКА ПЕРЕВОДЧИК ==================== */
+function doTranslate(){
+  const raw=document.getElementById("tinp").value.trim();
+  const toks=raw.split(/\s+/).filter(Boolean);
+  const out=document.getElementById("tout");
+  if(!toks.length){out.innerHTML="";return;}
+  const rows=toks.map(t=>{
+    const g=lookup(t);
+    if(g)return `<tr><td class="ta"><b>${t}</b></td><td class="ta">${g.ta}</td><td>${g.ru}</td><td class="hint">${(g.tags||[]).join(", ")}</td></tr>`;
+    return `<tr><td class="ta"><b>${t}</b></td><td>—</td><td class="hint">нет в глоссарии</td><td></td></tr>`;
+  });
+  out.innerHTML=`<div class="wrap-x"><table class="tbl"><thead><tr><th>Слог/слово</th><th>தமிழ்</th><th>Значение</th><th>Пометы</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>`;
+}
+document.getElementById("tgo").onclick=doTranslate;
+document.getElementById("tclr").onclick=()=>{document.getElementById("tinp").value="";document.getElementById("tout").innerHTML="";};
+document.querySelectorAll("[data-ex]").forEach(ch=>{
+  ch.addEventListener("click",()=>{document.getElementById("tinp").value=ch.dataset.ex;doTranslate();});
+});
+/* глоссарий и сандхи */
+document.getElementById("glossBody").innerHTML=GLOSSARY.map(g=>
+  `<tr><td class="ta"><b>${g.iso}</b></td><td class="ta">${g.ta}</td><td>${g.ru}<div class="hint">${g.en} · ${g.src}</div></td><td class="hint">${(g.tags||[]).join(", ")}</td></tr>`
+).join("");
+document.getElementById("sandhiList").innerHTML=SANDHI_RULES.map(([a,b])=>`<b>${a}</b><span>${b}</span>`).join("");
+doTranslate();
+</script>
+</body>
+</html>

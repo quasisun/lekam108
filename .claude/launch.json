@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "lekam108",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "7914"],
+      "port": 7914
+    }
+  ]
+}
