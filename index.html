@@ -94,6 +94,13 @@ svg.wheel{max-width:100%;height:auto;touch-action:manipulation}
 .word .gl{color:var(--c-ink-soft);font-weight:400}
 .ta{font-size:1.15em}
 
+/* Отрезок и ИИ-анализ */
+.seg-chip{display:inline-flex;align-items:center;padding:4px 12px;margin:2px;border-radius:14px;background:var(--c-red);color:#fff;font-weight:700;font-size:1.05em}
+.ai-out{margin-top:12px;padding:14px;border-radius:10px;background:#fff;border:2px solid var(--c-line);white-space:pre-wrap;font-size:var(--fs-small);line-height:1.55;word-break:break-word}
+.ai-out.err{border-color:var(--c-red);color:var(--c-red)}
+.spin{display:inline-block;width:16px;height:16px;border:3px solid rgba(239,80,36,.3);border-top-color:var(--c-orange);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-3px;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
 /* Переводчик */
 .gl-out{margin-top:14px}
 .legend{font-size:.8rem;color:var(--c-ink-soft);margin-top:8px}
@@ -220,8 +227,39 @@ details summary{cursor:pointer;font-weight:700;color:var(--c-red)}
       <p class="hint" id="chDesc"></p>
       <div class="wheel-wrap"><svg class="wheel" id="wheel" viewBox="0 0 420 420" role="img"></svg></div>
       <p class="hint">Читается по 4 квадрантам (①→④), каждый квадрант — 8 слогов, обрамлённых
-        рефреном <b>vā</b> (это и есть «бандха» — замо́к колеса). Нажмите на квадрант.</p>
+        рефреном <b>vā</b> (это и есть «бандха» — замо́к колеса). Клик по кружку добавляет слог
+        в «отрезок» (ниже); клик по номеру квадранта подсвечивает его чтение.</p>
       <div id="quadReads"></div>
+    </div>
+
+    <div class="astro-card" style="margin-top:16px">
+      <h2 class="astro-h2" style="font-size:1.05rem">Отрезок: подбор слов и перевод</h2>
+      <p class="hint">Выберите на колесе от 1 до 5 кружков — слоги собираются в отрезок в порядке
+        чтения. Инструмент подберёт тамильские слова с учётом падежей, метрических долгот и
+        усечений, покажет граммсправку и варианты чтения. Повторный клик снимает выбор.</p>
+      <div class="q-read" id="segInfo">Кружки не выбраны.</div>
+      <div class="controls">
+        <button class="astro-btn astro-btn--ghost" id="segClear">Сбросить</button>
+        <button class="astro-btn" id="segAI">Анализ ИИ (Claude)</button>
+      </div>
+      <div id="segWords"></div>
+      <div id="segTrans"></div>
+      <div id="aiOut" hidden></div>
+      <details id="aiSettings" style="margin-top:12px"><summary>Настройки ИИ</summary>
+        <div class="astro-field" style="margin-top:10px">
+          <label for="aiKey">API-ключ Anthropic</label>
+          <input id="aiKey" type="password" placeholder="sk-ant-..." autocomplete="off">
+        </div>
+        <div class="astro-field">
+          <label for="aiModel">Модель</label>
+          <select id="aiModel">
+            <option value="claude-opus-4-8" selected>Claude Opus 4.8 — глубокий анализ</option>
+            <option value="claude-haiku-4-5">Claude Haiku 4.5 — быстрый ответ</option>
+          </select>
+        </div>
+        <p class="hint">Ключ хранится только в этом браузере (localStorage) и отправляется только
+          на api.anthropic.com. Для ИИ-анализа нужен интернет; всё остальное работает офлайн.</p>
+      </details>
     </div>
   </section>
 
@@ -336,6 +374,8 @@ details summary{cursor:pointer;font-weight:700;color:var(--c-red)}
     <p class="astro-credits">
       Использован словарь: Tamil Lexicon, University of Madras, 1924–1936.
       Перевод со старотамильского — Светлана Кройцер.
+      ИИ-анализ (опционально): Anthropic Claude API — ключ пользователя хранится
+      только локально в браузере.
     </p>
     <p class="astro-copyright">
       © <span id="year"></span> Индийская астрология со Светланой Кройцер · goroskop1008.ru
@@ -411,6 +451,96 @@ const GLOSSARY = [
   {iso:"vāci", ta:"வாசி", ru:"vāci vāci (повтор из диаграммы)", en:"vāci (repeated)", src:"диаграмма", tags:[]}
 ];
 
+/* Падежные окончания и частицы для разбора отрезков */
+const CASE_SUFFIXES = [
+  {iso:"ai",   name:"винительный падеж",  note:"прямое дополнение (кого/что)"},
+  {iso:"āl",   name:"творительный падеж", note:"кем/чем; причина"},
+  {iso:"kku",  name:"дательный падеж",    note:"кому/чему"},
+  {iso:"ku",   name:"дательный падеж",    note:"кому/чему"},
+  {iso:"il",   name:"местный падеж",      note:"в/на"},
+  {iso:"iṉ",   name:"родительный падеж",  note:"чей; также основа косв. падежей"},
+  {iso:"ōṭu",  name:"совместный падеж",   note:"с кем/чем"},
+  {iso:"uṭaṉ", name:"совместный падеж",   note:"вместе с"},
+  {iso:"ē",    name:"эмфатическая частица / зват.", note:"усиление; обращение"},
+  {iso:"ā",    name:"вопросительная частица / зват.", note:"вопрос; обращение"},
+  {iso:"um",   name:"союзная частица",    note:"и, тоже, даже"},
+  {iso:"kaḷ",  name:"множественное число", note:"мн. ч."}
+];
+
+/* Мини-лексикон для подбора слов по отрезкам колеса: 64 слов.
+   Собран ИИ-агентами по всем n-граммам (1–5 слогов) обоих колёс и проверен
+   двумя независимыми скептиками (существование/письмо и русские значения).
+   Черновой исследовательский инструмент — сверяйте с Tamil Lexicon перед публикацией. */
+const WORDS = [
+{iso:"aṟam",ta:"அறம்",ru:["дхарма", "добродетель"],pos:"сущ.",gram:"первая из целей жизни"},
+{iso:"āṟu",ta:"ஆறு",ru:["река", "шесть", "путь, способ"],pos:"сущ./числ.",gram:"—"},
+{iso:"cī",ta:"சீ",ru:["фу! (возглас отвращения)", "Шри, Лакшми"],pos:"межд.",gram:"межд.; сущ. (в знач. «Шри, Лакшми»)"},
+{iso:"civam",ta:"சிவம்",ru:["благо", "Шива (абстрактное)"],pos:"сущ.",gram:"санскр. заимствование śiva"},
+{iso:"civaṉ",ta:"சிவன்",ru:["Шива"],pos:"сущ.",gram:"имя собственное муж. рода на -aṉ; звательный падеж civā — отпадение -ṉ с удлинением конечного гласного"},
+{iso:"irāvaṇaṉ",ta:"இராவணன்",ru:["Равана, царь ракшасов Ланки", "(в шиваитском предании) поднявший Кайласу и снискавший милость Шивы пением"],pos:"сущ.",gram:"Имя собственное, санскритское заимствование rāvaṇa-; в тамильской орфографии с протетическим и- (இராவணன்), звательный/усечённый вид — rāvaṇa."},
+{iso:"kā",ta:"கா",ru:["роща", "сад", "охраняй!"],pos:"сущ./глаг.",gram:"существительное «роща, сад»; также корень и императив глагола kā(-ttal) «охранять, беречь»"},
+{iso:"kalai",ta:"கலை",ru:["искусство", "наука"],pos:"сущ.",gram:"санскр. kalā"},
+{iso:"kāmam",ta:"காமம்",ru:["страсть", "любовное желание", "вожделение"],pos:"сущ.",gram:"существительное на -am (санскр. kāma); усечение конечного -m даёт kāma"},
+{iso:"kāmaṉ",ta:"காமன்",ru:["Кама (бог любви)", "Манматха"],pos:"сущ.",gram:"имя собственное на -aṉ; винительный падеж kāmaṉ + -ai = kāmaṉai «Каму (кого?)»"},
+{iso:"kaṉā",ta:"கனா",ru:["сон", "сновидение"],pos:"сущ.",gram:"поэтический стянутый вариант kaṉavu (ср. «kaṉāk kaṇṭēṉ» в Тируппавей)"},
+{iso:"kaṉam",ta:"கனம்",ru:["тяжесть", "вес", "важность", "золото"],pos:"сущ.",gram:"существительное на -am (санскр. ghana); усечение конечного -m даёт kaṉa"},
+{iso:"kaṉavu",ta:"கனவு",ru:["сон", "сновидение", "мечта"],pos:"сущ.",gram:"существительное; с эмфатической частицей -ē краткое -u элидируется: kaṉavu + ē → kaṉavē"},
+{iso:"kār",ta:"கார்",ru:["туча, дождевое облако; дождь", "сезон дождей", "чернота, тьма"],pos:"сущ.",gram:"сезон дождей в сангамской поэзии"},
+{iso:"kāram",ta:"காரம்",ru:["острота", "едкость", "жгучий вкус", "щёлочь"],pos:"сущ.",gram:"существительное на -am; усечение конечного -m даёт kāra"},
+{iso:"kaṭu",ta:"கடு",ru:["резкий, едкий, острый (о вкусе)", "суровый, жестокий", "быстрый, стремительный (в сложениях)"],pos:"прил./глаг.",gram:"адъективная основа (в композитах); глаг. கடுத்தல் «быть едким; гневаться»"},
+{iso:"mā",ta:"மா",ru:["животное, зверь", "манго (дерево)", "великий, большой", "Лакшми"],pos:"сущ.",gram:"сущ./прил."},
+{iso:"malai",ta:"மலை",ru:["гора"],pos:"сущ.",gram:"вин. malaiyai"},
+{iso:"mālai",ta:"மாலை",ru:["гирлянда", "вечер"],pos:"сущ.",gram:"—"},
+{iso:"māṉ",ta:"மான்",ru:["олень", "антилопа"],pos:"сущ.",gram:"вин. māṉai"},
+{iso:"maṉai",ta:"மனை",ru:["дом", "жилище", "участок под дом", "жена, хозяйка дома"],pos:"сущ.",gram:"существительное в номинативе (словарная форма); в чакре записано через na, что по конвенции потока передаёт ṉai (ср. kā-ma-nai = kāmaṉai)"},
+{iso:"maṇi",ta:"மணி",ru:["драгоценный камень, самоцвет", "колокол, колокольчик", "час, время (соврем.)"],pos:"сущ.",gram:"—"},
+{iso:"mō",ta:"மோ",ru:["нюхать", "обонять", "целовать (вдыхая запах)"],pos:"глаг.",gram:"глагольный корень 11-го спряжения (mō-ttal, ср. Курал 90 mōppa); форма совпадает с императивом 2 л. ед. ч."},
+{iso:"mōkam",ta:"மோகம்",ru:["вожделение", "страсть", "заблуждение, помрачение", "обморок"],pos:"сущ.",gram:"санскритское заимствование (moha); конечный -m отпадает, основа mōka- обычна в сложениях"},
+{iso:"mōkaṉam",ta:"மோகனம்",ru:["очарование", "обольщение", "одурманивание", "рага Мохана"],pos:"сущ.",gram:"санскритское заимствование (mohana); конечный -m отпадает, основа mōkaṉa- употребительна атрибутивно; na потока соответствует ṉa орфографии"},
+{iso:"mōṉam",ta:"மோனம்",ru:["молчание, безмолвие (в т.ч. аскетический обет молчания, мауна)"],pos:"сущ.",gram:"санскр. mauna"},
+{iso:"mōr",ta:"மோர்",ru:["пахта"],pos:"сущ.",gram:"существительное; конечный -r отпадает по допуску чакрабандхи (mōr → mō)"},
+{iso:"nā",ta:"நா",ru:["язык (орган)"],pos:"сущ.",gram:"существительное, именительный падеж; краткая форма к nākku"},
+{iso:"nai",ta:"நை",ru:["изнемогать", "сокрушаться", "быть раздавленным", "горевать"],pos:"глаг.",gram:"глагольная основа nai-tal (4 спр.), также императив ед.ч."},
+{iso:"nalam",ta:"நலம்",ru:["благо; добро; благополучие", "здоровье"],pos:"сущ.",gram:"основа nala-; nala-ttal «обернуться ко благу»"},
+{iso:"naṭam",ta:"நடம்",ru:["танец (в т.ч. танец Шивы-Натараджи)"],pos:"сущ.",gram:"санскр. naṭa"},
+{iso:"naṭi",ta:"நடி",ru:["танцевать", "играть на сцене, исполнять роль", "(перен.) притворяться"],pos:"глаг.",gram:"дееприч. naṭittu; сущ. naṭi «актриса»"},
+{iso:"nāṭi",ta:"நாடி",ru:["пульс", "кровеносный сосуд", "нади (канал тонкого тела)"],pos:"сущ.",gram:"существительное (санскр. заимств. nāḍī), именительный падеж"},
+{iso:"nāṭu",ta:"நாடு",ru:["искать", "стремиться", "желать", "исследовать"],pos:"глаг.",gram:"глагол 5 спр.; деепричастие nāṭi; с вспом. iṭu — nāṭiṭu (императив), nāṭiṭum + вопросит. -ō — nāṭiṭumō"},
+{iso:"nilai",ta:"நிலை",ru:["состояние", "положение", "устойчивость"],pos:"сущ.",gram:"—"},
+{iso:"pala",ta:"பல",ru:["многие", "несколько", "разные"],pos:"прил.",gram:"местоименное прилагательное множественности (неличный класс)"},
+{iso:"vā",ta:"வா",ru:["приходи", "приходить"],pos:"глаг.",gram:"императив 2 л. ед. ч. от глагола varu-/vā- «приходить» (Tamil Lexicon: வா vā)"},
+{iso:"vāci",ta:"வாசி",ru:["читай", "читать", "дыхание", "разница"],pos:"глаг.",gram:"глаг. (читай, читать); сущ. (дыхание; разница)"},
+{iso:"valai",ta:"வலை",ru:["сеть"],pos:"сущ.",gram:"—"},
+{iso:"vālam",ta:"வாலம்",ru:["хвост"],pos:"сущ.",gram:"санскритское заимствование (vāla); ср. исконное vāl «хвост»"},
+{iso:"vali",ta:"வலி",ru:["сила", "боль"],pos:"сущ.",gram:"—"},
+{iso:"vāmam",ta:"வாமம்",ru:["левая сторона", "красота"],pos:"сущ.",gram:"санскритское заимствование (vāma); словарная форма на -m"},
+{iso:"vāṇāḷ",ta:"வாணாள்",ru:["срок жизни", "продолжительность жизни"],pos:"сущ.",gram:"сущ.; стяжённая форма от வாழ்நாள் (vāḻ-nāḷ)"},
+{iso:"vāṇam",ta:"வாணம்",ru:["стрела", "ракета", "фейерверк"],pos:"сущ.",gram:"существительное, санскритское заимствование (bāṇa)"},
+{iso:"vāṉam",ta:"வானம்",ru:["небо", "небеса", "облако (поэт.)", "дождь (поэт.)"],pos:"сущ.",gram:"существительное; при усечении конечного -m даёт vāṉa"},
+{iso:"vāṇaṉ",ta:"வாணன்",ru:["Банасура", "царь асуров, почитатель Шивы"],pos:"сущ.",gram:"имя собственное мужского рода на -aṉ (Bāṇa), звательная форма Vāṇā"},
+{iso:"vāṉavaṉ",ta:"வானவன்",ru:["небожитель", "бог", "дева", "Индра", "титул царей династии Чера (поэт.)"],pos:"сущ.",gram:"существительное муж. рода на -aṉ; звательная форма vāṉavā (замена -aṉ на -ā)"},
+{iso:"varam",ta:"வரம்",ru:["дар, милость (испрошенная у божества)", "благословение"],pos:"сущ.",gram:"санскр. vara"},
+{iso:"vāram",ta:"வாரம்",ru:["неделя", "день недели", "доля урожая", "любовь"],pos:"сущ.",gram:"санскритское заимствование (vāra) «неделя»; омонимы: vāram «доля издольщика», vāram «любовь» (классич.)"},
+{iso:"vāṭu",ta:"வாடு",ru:["вянуть", "увядать", "чахнуть", "изнывать"],pos:"глаг.",gram:"глагол; vāṭi — деепричастие прошедшего времени (vinaiyeccam)"},
+{iso:"vāval",ta:"வாவல்",ru:["летучая мышь", "крылан"],pos:"сущ.",gram:"существительное, вариант vavvāl (Tamil Lexicon: வாவல் «bat»)"},
+{iso:"vayā",ta:"வயா",ru:["прихоть беременной", "страстная тяга", "желание"],pos:"сущ.",gram:"существительное классического языка (ср. vayāvu)"},
+{iso:"vayam",ta:"வயம்",ru:["сила", "власть", "подчинение", "победа"],pos:"сущ.",gram:"существительное (ср. vacam «власть, подвластность»)"},
+{iso:"vēl",ta:"வேல்",ru:["копьё, дротик, пика (в т.ч. атрибут Муругана)"],pos:"сущ.",gram:"символ Муругана"},
+{iso:"vēlai",ta:"வேலை",ru:["работа; труд; занятие", "(классич., поэт.) время, срок; в совр. языке «время» — вேளை (vēḷai)"],pos:"сущ.",gram:"—"},
+{iso:"vēlaṉ",ta:"வேலன்",ru:["Муруган (копьеносец)", "жрец Муругана"],pos:"сущ.",gram:"имя муж. рода на -aṉ; при усечении конечного -ṉ даёт vēla"},
+{iso:"vēlavaṉ",ta:"வேலவன்",ru:["Муруган", "владетель копья", "Сканда"],pos:"сущ.",gram:"существительное муж. рода на -aṉ; звательная форма vēlavā"},
+{iso:"vikāram",ta:"விகாரம்",ru:["изменение", "искажение", "возмущение (ума)", "уродство"],pos:"сущ.",gram:"санскритское заимствование (vikāra); словарная форма на -m"},
+{iso:"yā",ta:"யா",ru:["дерево я (Hardwickia binata)", "что? (вопросительная основа)"],pos:"сущ.",gram:"сущ. (дерево); вопросительная основа — местоименная, не сущ.; есть также омонимичный глагол யா- «связывать»"},
+{iso:"yāci",ta:"யாசி",ru:["просить", "попрошайничать", "умолять"],pos:"глаг.",gram:"глаг. (переходн.); யாசி-த்தல் < скр. yāc"},
+{iso:"yāḷi",ta:"யாளி",ru:["яли (мифическое существо: тело и морда льва, хобот и бивни слона)"],pos:"сущ.",gram:"—"},
+{iso:"yāmam",ta:"யாமம்",ru:["стража, трёхчасовой отрезок суток (особенно ночи)", "полночь; средняя стража ночи"],pos:"сущ.",gram:"существительное (из скр. yāma); при усечении конечного -m даёт yāma"},
+{iso:"yāṉai",ta:"யானை",ru:["слон"],pos:"сущ.",gram:"—"},
+{iso:"yavam",ta:"யவம்",ru:["ячмень"],pos:"сущ.",gram:"санскритское заимствование (yava); усечение -m плюс метрическое удлинение конечного гласного"}
+];
+
+/* Состояние выбора кружков (отрезок) */
+const SEG = [];
+
 const SANDHI_RULES = [
   ["a + a → ā","слияние одинаковых гласных (напр. -a + a-)"],
   ["-am + гласный","конечное -am часто выпадает/сливается перед гласным"],
@@ -428,6 +558,11 @@ function lookup(tok){
   if(GL_INDEX.has(t))return GL_INDEX.get(t);
   const bare=stripLong(t);
   for(const [k,g] of GL_INDEX){ if(stripLong(k)===bare)return g; }
+  for(const w of WORDS){
+    const k=normalize(w.iso);
+    if(k===t||stripLong(k)===bare)
+      return {iso:w.iso,ta:w.ta,ru:w.ru.join("; "),en:"",src:"лексикон",tags:[w.pos]};
+  }
   return null;
 }
 function segmentWords(sylArr){
@@ -672,13 +807,18 @@ function renderWheel(){
       const tx=svgEl("text",{x:x,y:y+4,"text-anchor":"middle","font-size":unc?"10":"12","font-weight":"700",fill:frame?"#fff":"#2a2320"});
       tx.textContent=s+(unc?"?":"");
       g.appendChild(circ);g.appendChild(tx);
-      g.addEventListener("click",()=>selectQuad(qi));
+      if(SEG.some(e=>e.qi===qi&&e.si===si)){
+        const ring=svgEl("circle",{cx:x,cy:y,r:20,fill:"none",stroke:"#df2227","stroke-width":"3"});
+        g.appendChild(ring);
+      }
+      g.addEventListener("click",()=>toggleSeg(qi,si,s));
       svg.appendChild(g);
     });
-    // номер квадранта
+    // номер квадранта (клик — подсветить чтение)
     const [nx,ny]=polar(cx,cy,178,a0+45);
-    const num=svgEl("text",{x:nx,y:ny+5,"text-anchor":"middle","font-size":"16","font-weight":"700",fill:colors[qi]});
+    const num=svgEl("text",{x:nx,y:ny+5,"text-anchor":"middle","font-size":"16","font-weight":"700",fill:colors[qi],style:"cursor:pointer"});
     num.textContent=["①","②","③","④"][qi];
+    num.addEventListener("click",()=>selectQuad(qi));
     svg.appendChild(num);
   });
   svg.appendChild(cName);svg.appendChild(cSum);
@@ -713,13 +853,200 @@ function selectQuad(qi){
   const el=document.getElementById("qr"+qi);
   if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-document.getElementById("ch1btn").onclick=()=>{curChakra=CHAKRA1;setChBtns();renderWheel();};
-document.getElementById("ch2btn").onclick=()=>{curChakra=CHAKRA2;setChBtns();renderWheel();};
+document.getElementById("ch1btn").onclick=()=>{curChakra=CHAKRA1;SEG.length=0;setChBtns();renderWheel();updateSegPanel();};
+document.getElementById("ch2btn").onclick=()=>{curChakra=CHAKRA2;SEG.length=0;setChBtns();renderWheel();updateSegPanel();};
 function setChBtns(){
   document.getElementById("ch1btn").className="astro-btn"+(curChakra===CHAKRA1?"":" astro-btn--ghost");
   document.getElementById("ch2btn").className="astro-btn"+(curChakra===CHAKRA2?"":" astro-btn--ghost");
 }
 renderWheel();
+
+/* ==================== ОТРЕЗОК: ПОДБОР СЛОВ И ИИ ==================== */
+function toggleSeg(qi,si,s){
+  const ix=SEG.findIndex(e=>e.qi===qi&&e.si===si);
+  if(ix>=0)SEG.splice(ix,1);
+  else{
+    if(SEG.length>=5){flashSegInfo("Максимум 5 кружков — снимите один из выбранных.");return;}
+    SEG.push({qi,si,s});
+  }
+  SEG.sort((a,b)=>(a.qi*8+a.si)-(b.qi*8+b.si));
+  renderWheel();
+  updateSegPanel();
+}
+function isContiguous(){
+  if(SEG.length<2)return true;
+  const pos=SEG.map(e=>e.qi*8+e.si);
+  for(let i=1;i<pos.length;i++)if(pos[i]-pos[i-1]!==1)return false;
+  return true;
+}
+function flashSegInfo(msg){
+  const info=document.getElementById("segInfo");
+  info.innerHTML=`<b style="color:var(--c-red)">${msg}</b>`;
+  setTimeout(updateSegPanel,1800);
+}
+
+/* Формы слова: словарная, усечение конечного согласного, звательная/долгота */
+function wordForms(w){
+  const f=[{s:w.iso,tag:"словарная форма"}];
+  const m=w.iso.match(/^(.+?)(m|ṉ|n|r|l|ḷ)$/);
+  if(m)f.push({s:m[1],tag:"поэтич. усечение конечного -"+m[2]});
+  if(/[aiu]$/.test(w.iso)){
+    const L={"a":"ā","i":"ī","u":"ū"}[w.iso.slice(-1)];
+    f.push({s:w.iso.slice(0,-1)+L,tag:"звательная форма / метрич. долгота"});
+  }
+  if(m&&/aṉ$/.test(w.iso))f.push({s:w.iso.slice(0,-2)+"ā",tag:"звательная форма (-aṉ→-ā)"});
+  return f;
+}
+
+/* Орфографическая нормализация для сопоставления: ś↔c (грантха/тамильская ச),
+   ṉ↔n (альвеолярный/дентальный часто смешиваются в записи диаграмм).
+   Ретрофлексные ṇ/ḷ/ṟ НЕ приравниваются — они различают значения. */
+function normSeg(x){return x.replace(/ś/g,"c").replace(/ṉ/g,"n");}
+function skelSeg(x){return stripLong(normSeg(x));}
+
+/* Подбор слов к строке слогов: точная форма > падеж > долготы */
+function matchSeg(s){
+  const out=[];
+  const push=(w,how,score,suf)=>out.push({w,how,score,suf});
+  for(const w of WORDS){
+    for(const f of wordForms(w)){
+      if(normSeg(f.s)===normSeg(s))push(w,f.tag,f.tag==="словарная форма"?100:80);
+      else if(skelSeg(f.s)===skelSeg(s))push(w,f.tag+" · с учётом долгот",60);
+    }
+  }
+  for(const suf of CASE_SUFFIXES){
+    if(s.length>suf.iso.length&&s.endsWith(suf.iso)){
+      const base=s.slice(0,s.length-suf.iso.length);
+      for(const w of WORDS)for(const f of wordForms(w)){
+        if(normSeg(f.s)===normSeg(base))push(w,f.tag+" + -"+suf.iso+" ("+suf.name+")",75,suf);
+        else if(skelSeg(f.s)===skelSeg(base))push(w,f.tag+" + -"+suf.iso+" ("+suf.name+"), долготы",55,suf);
+      }
+    }
+  }
+  const best=new Map();
+  for(const c of out){const k=c.w.iso;if(!best.has(k)||best.get(k).score<c.score)best.set(k,c);}
+  return [...best.values()].sort((a,b)=>b.score-a.score);
+}
+
+/* Разбиения отрезка на 1–3 части и их чтение */
+function segmentations(sylArr){
+  const res=[];const n=sylArr.length;
+  (function parts(start,acc){
+    if(acc.length>3)return;
+    if(start===n){res.push([...acc]);return;}
+    for(let end=start+1;end<=n;end++){acc.push(sylArr.slice(start,end).join(""));parts(end,acc);acc.pop();}
+  })(0,[]);
+  const scored=[];
+  for(const segm of res){
+    const ms=segm.map(p=>({p,m:matchSeg(p)[0]||null}));
+    const matched=ms.filter(x=>x.m).length;
+    if(!matched)continue;
+    const score=ms.reduce((a,x)=>a+(x.m?x.m.score:0),0)/segm.length+matched*10-segm.length*5;
+    scored.push({ms,score});
+  }
+  return scored.sort((a,b)=>b.score-a.score).slice(0,3);
+}
+
+function updateSegPanel(){
+  const info=document.getElementById("segInfo");
+  const wordsBox=document.getElementById("segWords");
+  const transBox=document.getElementById("segTrans");
+  if(!SEG.length){info.innerHTML="Кружки не выбраны.";wordsBox.innerHTML="";transBox.innerHTML="";return;}
+  const syls=SEG.map(e=>e.s);
+  const cont=isContiguous();
+  info.innerHTML="<b>Отрезок:</b> "+syls.map(s=>`<span class="seg-chip">${s}</span>`).join(" ")+
+    ` <span class="hint">(${curChakra===CHAKRA1?"Чакра I":"Чакра II"}; позиции ${SEG.map(e=>(e.qi+1)+"."+(e.si+1)).join(", ")}; ${cont?"подряд в порядке чтения":"слоги не смежны"})</span>`;
+  const s=syls.join("");
+  const matches=matchSeg(s).slice(0,8);
+  if(matches.length){
+    wordsBox.innerHTML=`<div class="grid-label">Подходящие слова целиком (${matches.length})</div>`+
+      `<div class="wrap-x"><table class="tbl"><thead><tr><th>Слово</th><th>Как совпало</th><th>Значения</th><th>Грамматика</th></tr></thead><tbody>`+
+      matches.map(c=>`<tr><td class="ta"><b>${c.w.iso}</b><br>${c.w.ta}</td><td class="hint">${c.how}</td><td>${c.w.ru.join("; ")}</td><td class="hint">${c.w.pos}${c.w.gram&&c.w.gram!=="—"?" · "+c.w.gram:""}${c.suf?" · "+c.suf.note:""}</td></tr>`).join("")+
+      `</tbody></table></div>`;
+  }else{
+    wordsBox.innerHTML=`<p class="hint" style="margin-top:10px">Целиком отрезок «${s}» в словаре не найден — смотрите разбиения ниже или спросите ИИ.</p>`;
+  }
+  const segs=SEG.length>1?segmentations(syls):[];
+  transBox.innerHTML=segs.length?
+    `<div class="grid-label">Возможные чтения отрезка (по частям)</div>`+segs.map(x=>
+      `<div class="q-read">`+x.ms.map(y=>y.m
+        ?`<span class="word ta">${y.p} <span class="gl">— ${y.m.w.ru[0]}${y.m.suf?" ("+y.m.suf.name+")":""}</span></span>`
+        :`<span class="word ta">${y.p} <span class="gl">— ?</span></span>`).join(" + ")+`</div>`).join("")
+    :"";
+}
+document.getElementById("segClear").addEventListener("click",()=>{SEG.length=0;renderWheel();updateSegPanel();});
+
+/* ---- ИИ-анализ через Anthropic API ---- */
+const aiKeyInput=document.getElementById("aiKey");
+aiKeyInput.value=localStorage.getItem("lekam108_api_key")||"";
+aiKeyInput.addEventListener("change",()=>localStorage.setItem("lekam108_api_key",aiKeyInput.value.trim()));
+const aiModelSel=document.getElementById("aiModel");
+aiModelSel.value=localStorage.getItem("lekam108_model")||"claude-opus-4-8";
+aiModelSel.addEventListener("change",()=>localStorage.setItem("lekam108_model",aiModelSel.value));
+document.getElementById("segAI").addEventListener("click",runAI);
+
+async function runAI(){
+  const out=document.getElementById("aiOut");
+  out.hidden=false;
+  const key=aiKeyInput.value.trim();
+  if(!SEG.length){out.className="ai-out err";out.textContent="Сначала выберите кружки на колесе (1–5).";return;}
+  if(!key){out.className="ai-out err";out.textContent="Укажите API-ключ Anthropic в «Настройках ИИ» ниже.";document.getElementById("aiSettings").open=true;return;}
+  const syls=SEG.map(e=>e.s);
+  const s=syls.join("");
+  const matches=matchSeg(s).slice(0,6);
+  const offline=matches.length?matches.map(c=>`${c.w.iso} (${c.w.ta}) — ${c.w.ru.join("; ")} [${c.how}]`).join("\n"):"(офлайн-словарь совпадений не нашёл)";
+  const prompt=`Исследование по комбинаторному стихосложению: пандиагональный магический квадрат 4×4 с константой 108 (строки: 51 1 49 7 / 48 8 50 2 / 5 47 3 53 / 4 52 6 46) и две старотамильские чакрабандхи (cakkarapantam).
+
+Чакра I (квадранты ①–④): ${CHAKRA1.quadrants.map(q=>q.join(" ")).join(" | ")}
+Чакра II (квадранты ①–④): ${CHAKRA2.quadrants.map(q=>q.join(" ")).join(" | ")} (слог lai в ④ — неуверенное чтение по инскрипции)
+Рефрен-рамка обеих чакр: vā. Известные чтения Чакры I после сандхи: nala, vima, naṭi, kaṭu → «К благому результату, о Шива, направь свой космический танец!»
+
+Выбранный отрезок из ${curChakra===CHAKRA1?"Чакры I":"Чакры II"}: «${syls.join(" ")}»${isContiguous()?" (слоги подряд в порядке чтения)":" (слоги НЕ смежны — экспериментальная выборка)"}.
+Позиции (квадрант.слог): ${SEG.map(e=>(e.qi+1)+"."+(e.si+1)).join(", ")}.
+
+Кандидаты нашего офлайн-словаря:
+${offline}
+
+Задача:
+1. Предложи тамильские слова и словоформы, которые могут читаться в этом отрезке. Учитывай: сандхи (puṇarcci), метрические долготы (краткий↔долгий гласный), усечение конечных согласных (-m/-ṉ/-r/-l/-ḷ), падежные окончания (-ai, -āl, -(k)ku, -il, -iṉ, -ōṭu, -ē, -ā, -um, -kaḷ), деепричастия (vinaiyeccam) и звательный падеж. Опирайся на Tamil Lexicon (University of Madras, 1924–1936).
+2. Для каждого слова: тамильское письмо, популярные значения по-русски, краткая грамматическая справка.
+3. Дай 1–3 варианта перевода отрезка целиком на русский.
+4. Отдельно пометь спекулятивные варианты. Если осмысленного чтения нет — скажи об этом прямо.`;
+  out.className="ai-out";
+  out.innerHTML=`<span class="spin"></span>Claude анализирует отрезок «${syls.join(" ")}»…`;
+  try{
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{
+        "x-api-key":key,
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true",
+        "content-type":"application/json"
+      },
+      body:JSON.stringify({
+        model:aiModelSel.value,
+        max_tokens:16000,
+        thinking:{type:"adaptive"},
+        system:"Ты — эксперт по классическому и современному тамильскому языку, чакрабандхам (cakkarapantam), Tamil Lexicon (University of Madras, 1924–1936) и комбинаторной поэтике. Отвечай по-русски, структурированно. Честно помечай спекулятивные гипотезы и никогда не выдумывай несуществующие слова.",
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+    const data=await resp.json().catch(()=>null);
+    if(!resp.ok){
+      const msg=(data&&data.error&&data.error.message)||("HTTP "+resp.status);
+      out.className="ai-out err";
+      out.textContent=(resp.status===401?"Ключ не принят (401). Проверьте API-ключ. ":resp.status===429?"Превышен лимит запросов (429), попробуйте чуть позже. ":"Ошибка API: ")+msg;
+      return;
+    }
+    if(data.stop_reason==="refusal"){out.className="ai-out err";out.textContent="Модель отклонила запрос (refusal). Попробуйте другой отрезок.";return;}
+    const text=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim();
+    out.className="ai-out";
+    out.textContent=text||"(пустой ответ)";
+  }catch(e){
+    out.className="ai-out err";
+    out.textContent="Сетевая ошибка: "+e.message+". Для ИИ-анализа нужен интернет (остальное приложение офлайн).";
+  }
+}
 
 /* ==================== ВКЛАДКА ЛАБОРАТОРИЯ ==================== */
 const labSq=document.getElementById("labSq"),labNum=document.getElementById("labNum"),labSyl=document.getElementById("labSyl");
