@@ -89,6 +89,7 @@ svg.wheel{max-width:100%;height:auto;touch-action:manipulation}
 .q-read.active{border-color:var(--c-orange);box-shadow:0 0 0 2px rgba(239,80,36,.2)}
 .q-read b{color:var(--c-red)}
 .syl{font-weight:700}
+.syl.unc{color:var(--c-orange);border-bottom:2px dashed var(--c-orange)}
 .word{display:inline-block;padding:2px 8px;margin:2px;border-radius:8px;background:var(--c-cream);border:1px solid var(--c-line)}
 .word .gl{color:var(--c-ink-soft);font-weight:400}
 .ta{font-size:1.15em}
@@ -382,14 +383,17 @@ const CHAKRA1 = {
 
 const CHAKRA2 = {
   name:"Чакра II · vā…vā",
-  desc:"Вторая чакрабандха для компаративного анализа. Слоги содержат ретрофлексные ṇ/ḷ/ṟ — важно для сандхи.",
+  desc:"Вторая чакрабандха для компаративного анализа. Слоги содержат ретрофлексные ṇ/ḷ/ṟ — важно для сандхи. Слог lai в квадранте ④ помечен «?» — чтение по инскрипции неуверенное.",
   quadrants:[
     ["vā","ṉa","vā","pa","la","ṟa","ya","vā"],
     ["vā","ya","ṟā","va","ṇa","yā","ma","vā"],
     ["vā","ma","vā","ma","ḷi","yā","ci","vā"],
-    ["vā","ci","yā","ṇi","vī","vā","ṇa","vā"]
+    /* ④, 5-й слог: lai(?) — буква на инскрипции плохо читается; долгий гласный (vī)
+       структурно невозможен. Варианты чтения будут перебираться. */
+    ["vā","ci","yā","ṇi","lai","vā","ṇa","vā"]
   ],
-  sandhi:["vālavāṭi","vāravāram","vāṭivāla","vāci"]
+  sandhi:["vālavāṭi","vāravāram","vāṭivāla","vāci"],
+  uncertain:["lai"]
 };
 
 /* Глоссарий (черновой, на проверку) */
@@ -662,9 +666,11 @@ function renderWheel(){
       const [x,y]=polar(cx,cy,rad,ang);
       const g=svgEl("g",{class:"qsyl","data-q":qi,style:"cursor:pointer"});
       const frame=(s==="vā");
-      const circ=svgEl("circle",{cx:x,cy:y,r:16,fill:frame?"#2a2320":"#faf4ea",stroke:colors[qi],"stroke-width":frame?"2":"1.5"});
-      const tx=svgEl("text",{x:x,y:y+4,"text-anchor":"middle","font-size":"12","font-weight":"700",fill:frame?"#fff":"#2a2320"});
-      tx.textContent=s;
+      const unc=(curChakra.uncertain||[]).includes(s);
+      const circ=svgEl("circle",{cx:x,cy:y,r:16,fill:frame?"#2a2320":"#faf4ea",stroke:unc?"#ef5024":colors[qi],"stroke-width":unc?"2.5":(frame?"2":"1.5")});
+      if(unc)circ.setAttribute("stroke-dasharray","5 3");
+      const tx=svgEl("text",{x:x,y:y+4,"text-anchor":"middle","font-size":unc?"10":"12","font-weight":"700",fill:frame?"#fff":"#2a2320"});
+      tx.textContent=s+(unc?"?":"");
       g.appendChild(circ);g.appendChild(tx);
       g.addEventListener("click",()=>selectQuad(qi));
       svg.appendChild(g);
@@ -686,14 +692,21 @@ function defsArrow(svg,qi,color){
 }
 function renderQuadReads(){
   const box=document.getElementById("quadReads");
+  const uncList=curChakra.uncertain||[];
   const quads=curChakra.quadrants.map((q,qi)=>{
-    const line=q.map(s=>`<span class="syl">${s}</span>`).join(" ");
+    const line=q.map(s=>{
+      const unc=uncList.includes(s);
+      return `<span class="syl${unc?" unc":""}">${s}${unc?"?":""}</span>`;
+    }).join(" ");
     return `<div class="q-read" id="qr${qi}"><b>${["①","②","③","④"][qi]}</b> ${line}</div>`;
   }).join("");
   const words=(curChakra.sandhi||[]).map(w=>wordChip(w)).join(" ");
+  const note=uncList.length?
+    `<p class="hint" style="margin:8px 0 0"><b>?</b> — чтение неуверенное (${uncList.join(", ")}):
+     буква на инскрипции плохо читается; варианты чтения перебираются.</p>`:"";
   box.innerHTML=quads+
     `<div class="q-read"><b>Слова после сандхи:</b>`+
-    `<div style="margin-top:6px">${words}</div></div>`;
+    `<div style="margin-top:6px">${words}</div>${note}</div>`;
 }
 function selectQuad(qi){
   document.querySelectorAll(".q-read").forEach((el,i)=>el.classList.toggle("active",i===qi));
