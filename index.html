@@ -105,6 +105,15 @@ svg.wheel{max-width:100%;height:auto;touch-action:manipulation}
 .ai-bot.err{border-color:var(--c-red);color:var(--c-red)}
 .ai-ask{margin-top:10px;display:flex;gap:8px;align-items:flex-end}
 .ai-ask textarea{flex:1;min-height:44px;resize:vertical;font:inherit;padding:8px 10px;border:2px solid var(--c-line);border-radius:8px;background:#fff}
+.astro-btn--stop{background:#8a1a1a;border-color:#8a1a1a;color:#fff}
+
+/* Подстрочник */
+.gloss-row{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+.gloss-slot{border:2px solid var(--c-line);border-radius:10px;background:#fff;padding:8px 10px;min-width:150px;flex:1 1 150px}
+.gloss-syl{font-weight:700;font-size:1.05em;color:var(--c-red);margin-bottom:6px}
+.gloss-slot select{width:100%;font:inherit;padding:6px;border:1px solid var(--c-line);border-radius:6px;background:#fff}
+.gloss-tag{display:inline-block;font-size:.8em;padding:1px 7px;margin-left:6px;border-radius:10px;background:var(--c-orange);color:#fff;vertical-align:1px}
+#glossOut{width:100%;font:inherit;padding:8px 10px;border:2px solid var(--c-line);border-radius:8px;background:#fff;resize:vertical}
 .spin{display:inline-block;width:16px;height:16px;border:3px solid rgba(239,80,36,.3);border-top-color:var(--c-orange);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-3px;margin-right:8px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
@@ -257,10 +266,30 @@ details summary{cursor:pointer;font-weight:700;color:var(--c-red)}
       <div class="q-read" id="segInfo">Кружки не выбраны.</div>
       <div class="controls">
         <button class="astro-btn astro-btn--ghost" id="segClear">Сбросить</button>
+        <button class="astro-btn astro-btn--ghost" id="glossBtn">Собрать подстрочник</button>
         <button class="astro-btn" id="segAI">Анализ ИИ (Claude)</button>
+        <button class="astro-btn astro-btn--stop" id="segStop" hidden>■ Остановить</button>
       </div>
       <div id="segWords"></div>
       <div id="segTrans"></div>
+
+      <div id="glossBuild" hidden>
+        <div class="grid-label">Подстрочник и сборка перевода</div>
+        <p class="hint">Выберите членение отрезка на слова, затем для каждого слова — подходящее
+          значение. Грамматическая форма (падеж, звательный, деепричастие) учитывается в сборке.
+          Итог можно свободно править.</p>
+        <div class="astro-field">
+          <label for="glossSeg">Членение на слова</label>
+          <select id="glossSeg"></select>
+        </div>
+        <div id="glossSlots" class="gloss-row"></div>
+        <div class="grid-label">Черновая сборка (по выбранным значениям)</div>
+        <div id="glossAuto" class="ai-out" style="margin-top:6px"></div>
+        <div class="astro-field" style="margin-top:10px">
+          <label for="glossOut">Ваш перевод (правьте свободно)</label>
+          <textarea id="glossOut" rows="2"></textarea>
+        </div>
+      </div>
       <div id="aiChat" hidden>
         <div id="aiLog"></div>
         <div id="aiAsk" class="ai-ask" hidden>
@@ -1074,6 +1103,7 @@ function updateSegPanel(){
   const info=document.getElementById("segInfo");
   const wordsBox=document.getElementById("segWords");
   const transBox=document.getElementById("segTrans");
+  glossReset();
   if(!SEG.length){info.innerHTML="Кружки не выбраны.";wordsBox.innerHTML="";transBox.innerHTML="";return;}
   const syls=SEG.map(e=>e.s);
   const cont=isContiguous();
@@ -1099,6 +1129,104 @@ function updateSegPanel(){
 }
 document.getElementById("segClear").addEventListener("click",()=>{SEG.length=0;renderWheel();updateSegPanel();});
 
+/* ================= ПОДСТРОЧНИК И СБОРКА ПЕРЕВОДА ================= */
+/* Короткая грамматическая помета из совпадения (падеж / звательный / дееприч.) */
+function gramTag(m){
+  if(m.suf){
+    const map={"винительный падеж":"вин.","творительный падеж":"твор.","дательный падеж":"дат.",
+      "местный падеж":"мест.","родительный падеж":"род.","совместный падеж":"совм.",
+      "эмфатическая частица / зват.":"зват.","вопросительная частица / зват.":"вопр.",
+      "союзная частица":"союз.","множественное число":"мн.ч."};
+    return map[m.suf.name]||m.suf.name;
+  }
+  if(/звательн/.test(m.how))return "зват.";
+  if(/дееприч/.test(m.how)||/дееприч/.test(m.w.gram||""))return "дееприч.";
+  return "";
+}
+
+/* Все членения отрезка на слова, отсортированные по «читаемости» (с мемоизацией matchSeg) */
+function allSplits(arr){
+  const n=arr.length, res=[], cache=new Map();
+  const mtop=p=>{ if(!cache.has(p))cache.set(p,matchSeg(p)); return cache.get(p)[0]||null; };
+  (function parts(start,acc){
+    if(start===n){res.push(acc.slice());return;}
+    for(let end=start+1;end<=n;end++){acc.push(arr.slice(start,end));parts(end,acc);acc.pop();}
+  })(0,[]);
+  const scored=res.map(split=>{
+    const parts=split.map(a=>a.join(""));
+    const ms=parts.map(mtop);
+    const matched=ms.filter(Boolean).length;
+    const score=ms.reduce((a,m)=>a+(m?m.score:0),0)/parts.length+matched*12-parts.length*4;
+    return {parts,matched,score};
+  });
+  scored.sort((a,b)=>b.score-a.score);
+  return scored;
+}
+
+function glossReset(){
+  const box=document.getElementById("glossBuild");
+  if(box)box.hidden=true;
+}
+
+let GLOSS_OPTS=[], GLOSS_DIRTY=false; // GLOSS_OPTS[i] = [{iso,ta,meaning,tag,how}]; DIRTY — правил ли пользователь поле вручную
+
+function buildGloss(){
+  const box=document.getElementById("glossBuild");
+  const syls=SEG.map(e=>e.s);
+  GLOSS_DIRTY=false;
+  if(!syls.length){box.hidden=false;document.getElementById("glossSlots").innerHTML=
+    '<p class="hint">Сначала выберите кружки на колесе (выше).</p>';
+    document.getElementById("glossAuto").textContent="";document.getElementById("glossOut").value="";
+    document.getElementById("glossSeg").innerHTML="";return;}
+  box.hidden=false;
+  const splits=allSplits(syls).filter(s=>s.matched>0).slice(0,12);
+  const list=splits.length?splits:allSplits(syls).slice(0,1);
+  const sel=document.getElementById("glossSeg");
+  sel.innerHTML=list.map((s,i)=>`<option value="${i}">${s.parts.join(" · ")} — ${s.matched}/${s.parts.length} слов</option>`).join("");
+  sel._splits=list;
+  renderGlossSlots();
+}
+
+function renderGlossSlots(){
+  const sel=document.getElementById("glossSeg");
+  const split=sel._splits[+sel.value||0];
+  const slotsBox=document.getElementById("glossSlots");
+  GLOSS_OPTS=[];
+  slotsBox.innerHTML=split.parts.map((part,si)=>{
+    const cands=matchSeg(part).slice(0,8);
+    const opts=[];
+    cands.forEach(c=>c.w.ru.forEach(mean=>opts.push({iso:c.w.iso,ta:c.w.ta,meaning:mean,tag:gramTag(c),how:c.how})));
+    GLOSS_OPTS[si]=opts;
+    const optHtml=['<option value="-1">— (пропустить)</option>']
+      .concat(opts.map((o,oi)=>`<option value="${oi}"${oi===0?" selected":""}>${o.iso} — ${o.meaning}${o.tag?" ["+o.tag+"]":""}</option>`)).join("");
+    return `<div class="gloss-slot"><div class="gloss-syl ta">${part}</div>`+
+      (opts.length?`<select data-slot="${si}">${optHtml}</select>`:`<span class="hint">нет словарного чтения</span>`)+`</div>`;
+  }).join("");
+  slotsBox.querySelectorAll("select").forEach(s=>s.addEventListener("change",composeGloss));
+  composeGloss(true);
+}
+
+function composeGloss(seed){
+  const selects=[...document.querySelectorAll("#glossSlots select")];
+  const pieces=[], gloss=[];
+  selects.forEach(sel=>{
+    const si=+sel.dataset.slot, oi=+sel.value;
+    if(oi<0)return;
+    const o=GLOSS_OPTS[si][oi];
+    gloss.push(o.tag==="зват."?("о "+o.meaning+"!"):(o.meaning+(o.tag?" ["+o.tag+"]":"")));
+    pieces.push(o.meaning);
+  });
+  const auto=gloss.join(" ");
+  document.getElementById("glossAuto").textContent=auto||"(значения не выбраны)";
+  // синхронизируем поле правки с выбором, пока пользователь не начал править вручную
+  if(seed===true)GLOSS_DIRTY=false;
+  if(!GLOSS_DIRTY)document.getElementById("glossOut").value=auto;
+}
+
+document.getElementById("glossBtn").addEventListener("click",buildGloss);
+document.getElementById("glossSeg").addEventListener("change",renderGlossSlots);
+document.getElementById("glossOut").addEventListener("input",()=>{GLOSS_DIRTY=true;});
+
 /* ---- ИИ-анализ через Anthropic API ---- */
 const aiKeyInput=document.getElementById("aiKey");
 aiKeyInput.value=localStorage.getItem("lekam108_api_key")||"";
@@ -1108,12 +1236,20 @@ aiModelSel.value=localStorage.getItem("lekam108_model")||"claude-opus-4-8";
 aiModelSel.addEventListener("change",()=>localStorage.setItem("lekam108_model",aiModelSel.value));
 document.getElementById("segAI").addEventListener("click",runAI);
 document.getElementById("aiSend").addEventListener("click",askFollowup);
+document.getElementById("segStop").addEventListener("click",()=>{if(AI_ABORT)AI_ABORT.abort();});
 document.getElementById("aiQ").addEventListener("keydown",e=>{
   if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askFollowup();}
 });
 
 const AI_SYS="Ты — эксперт по классическому и современному тамильскому языку, чакрабандхам (cakkarapantam), Tamil Lexicon (University of Madras, 1924–1936), санскритским заимствованиям в тамильском и комбинаторной поэтике. Отвечай по-русски, структурированно. Веди диалог: помни весь предыдущий разбор и отвечай на уточняющие вопросы, опираясь на него. Честно помечай спекулятивные гипотезы и никогда не выдумывай несуществующие слова.";
-let AI_MESSAGES=null, AI_LABEL="", AI_BUSY=false;
+let AI_MESSAGES=null, AI_LABEL="", AI_BUSY=false, AI_ABORT=null;
+
+function aiSetBusy(b){
+  AI_BUSY=b;
+  document.getElementById("segStop").hidden=!b;
+  document.getElementById("segAI").disabled=b;
+  document.getElementById("aiSend").disabled=b;
+}
 
 function aiEsc(x){return String(x).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 
@@ -1134,10 +1270,11 @@ function aiRenderLog(status){
   const last=log.lastElementChild; if(last)last.scrollIntoView({block:"nearest"});
 }
 
-async function aiCall(messages){
+async function aiCall(messages,signal){
   const key=aiKeyInput.value.trim();
   const resp=await fetch("https://api.anthropic.com/v1/messages",{
     method:"POST",
+    signal,
     headers:{
       "x-api-key":key,
       "anthropic-version":"2023-06-01",
@@ -1195,17 +1332,19 @@ ${offline}
   AI_LABEL="Анализ отрезка «"+syls.join(" ")+"» ("+(curChakra===CHAKRA1?"Чакра I":"Чакра II")+")";
   AI_MESSAGES=[{role:"user",content:prompt}];
   ask.hidden=true;
-  AI_BUSY=true;
+  AI_ABORT=new AbortController();
+  aiSetBusy(true);
   aiRenderLog({pending:"Claude анализирует отрезок «"+syls.join(" ")+"»…"});
   try{
-    const text=await aiCall(AI_MESSAGES);
+    const text=await aiCall(AI_MESSAGES,AI_ABORT.signal);
     AI_MESSAGES.push({role:"assistant",content:text});
     aiRenderLog();
     ask.hidden=false;
     document.getElementById("aiQ").focus();
   }catch(e){
-    aiRenderLog({error:(/Failed to fetch|NetworkError/.test(e.message)?"Сетевая ошибка — для ИИ-анализа нужен интернет. ":"")+e.message});
-  }finally{AI_BUSY=false;}
+    if(e.name==="AbortError"){AI_MESSAGES=null;aiRenderLog({error:"⏹ Анализ остановлен."});}
+    else aiRenderLog({error:(/Failed to fetch|NetworkError/.test(e.message)?"Сетевая ошибка — для ИИ-анализа нужен интернет. ":"")+e.message});
+  }finally{aiSetBusy(false);AI_ABORT=null;}
 }
 
 async function askFollowup(){
@@ -1215,17 +1354,19 @@ async function askFollowup(){
   if(!q)return;
   AI_MESSAGES.push({role:"user",content:q});
   inp.value="";
-  AI_BUSY=true;
+  AI_ABORT=new AbortController();
+  aiSetBusy(true);
   aiRenderLog({pending:"Claude думает…"});
   try{
-    const text=await aiCall(AI_MESSAGES);
+    const text=await aiCall(AI_MESSAGES,AI_ABORT.signal);
     AI_MESSAGES.push({role:"assistant",content:text});
     aiRenderLog();
   }catch(e){
-    AI_MESSAGES.pop();          // снять неудавшийся вопрос из истории
+    AI_MESSAGES.pop();          // снять неотвеченный вопрос из истории
     inp.value=q;                // вернуть текст для повторной отправки
-    aiRenderLog({error:(/Failed to fetch|NetworkError/.test(e.message)?"Сетевая ошибка — проверьте интернет. ":"")+e.message});
-  }finally{AI_BUSY=false;inp.focus();}
+    if(e.name==="AbortError"){aiRenderLog({error:"⏹ Вопрос остановлен."});}
+    else aiRenderLog({error:(/Failed to fetch|NetworkError/.test(e.message)?"Сетевая ошибка — проверьте интернет. ":"")+e.message});
+  }finally{aiSetBusy(false);AI_ABORT=null;inp.focus();}
 }
 
 /* ==================== ВКЛАДКА ЛАБОРАТОРИЯ ==================== */
